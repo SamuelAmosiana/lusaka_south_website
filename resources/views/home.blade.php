@@ -29,6 +29,17 @@
 .updates-section{background:#fff}
 .campus-section{background:var(--gray-100)}
 .gallery-section{background:#fff}
+/* Stats Counter Section */
+.stats-counter-section{background:linear-gradient(135deg,var(--dark-green) 0%,var(--primary-green) 100%);padding:45px 0;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.12);position:relative;z-index:10}
+.stats-counter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:25px}
+.stat-counter-card{text-align:center;padding:25px 15px;border-radius:15px;background:rgba(255,255,255,.08);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);transition:transform .3s ease,background .3s ease,box-shadow .3s ease}
+.stat-counter-card:hover{transform:translateY(-6px);background:rgba(255,255,255,.15);box-shadow:0 12px 28px rgba(0,0,0,.2)}
+.stat-icon{font-size:2.2rem;color:var(--light-orange);margin-bottom:12px}
+.stat-number-wrapper{font-size:2.8rem;font-weight:800;line-height:1.1;color:#fff;margin-bottom:8px}
+.stat-suffix{color:var(--primary-orange);font-weight:800;margin-left:2px}
+.stat-label{font-size:1.05rem;font-weight:600;color:rgba(255,255,255,.95);letter-spacing:.5px;text-transform:capitalize}
+@media(max-width:992px){.stats-counter-grid{grid-template-columns:repeat(2,1fr);gap:20px}}
+@media(max-width:576px){.stats-counter-grid{grid-template-columns:1fr;gap:15px}.stat-number-wrapper{font-size:2.3rem}}
 @media(max-width:768px){.hero h1{font-size:2.2rem}.hero .motto{font-size:1.3rem}.hero-content{margin:20px;padding:25px}}
 </style>
 @endsection
@@ -43,6 +54,42 @@
         <div class="hero-btns">
             <a href="{{ config('site.apply.undergraduate') }}" class="cta-button"><i class="fa fa-graduation-cap me-2"></i>Apply Now</a>
             <a href="{{ route('schools') }}" class="cta-button-outline" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.6)"><i class="fa fa-book-open me-2"></i>Explore Programs</a>
+        </div>
+    </div>
+</section>
+
+{{-- Data Summary / Stats Counter Section --}}
+<section class="stats-counter-section">
+    <div class="container">
+        <div class="stats-counter-grid">
+            <div class="stat-counter-card">
+                <div class="stat-icon"><i class="fa fa-user-graduate"></i></div>
+                <div class="stat-number-wrapper">
+                    <span class="stat-number" data-target="1000">1000</span><span class="stat-suffix">+</span>
+                </div>
+                <div class="stat-label">Enrolled Students</div>
+            </div>
+            <div class="stat-counter-card">
+                <div class="stat-icon"><i class="fa fa-book-open"></i></div>
+                <div class="stat-number-wrapper">
+                    <span class="stat-number" data-target="50">50</span><span class="stat-suffix">+</span>
+                </div>
+                <div class="stat-label">Programs Offered</div>
+            </div>
+            <div class="stat-counter-card">
+                <div class="stat-icon"><i class="fa fa-university"></i></div>
+                <div class="stat-number-wrapper">
+                    <span class="stat-number" data-target="5">5</span>
+                </div>
+                <div class="stat-label">Schools</div>
+            </div>
+            <div class="stat-counter-card">
+                <div class="stat-icon"><i class="fa fa-award"></i></div>
+                <div class="stat-number-wrapper">
+                    <span class="stat-number" data-target="500">500</span><span class="stat-suffix">+</span>
+                </div>
+                <div class="stat-label">Graduated Students</div>
+            </div>
         </div>
     </div>
 </section>
@@ -232,5 +279,40 @@ if(carousel){
     carousel.addEventListener('mouseenter',()=>clearInterval(carouselInterval));
     carousel.addEventListener('mouseleave',()=>{carouselInterval=setInterval(nextSlide,3000);});
 }
+
+// Animated Stat Counters
+(function() {
+    function animateCounters() {
+        const counters = document.querySelectorAll('.stat-number');
+        counters.forEach(counter => {
+            const target = +counter.getAttribute('data-target');
+            let count = 0;
+            const step = Math.max(1, Math.ceil(target / 45));
+            const timer = setInterval(() => {
+                count += step;
+                if (count >= target) {
+                    counter.innerText = target;
+                    clearInterval(timer);
+                } else {
+                    counter.innerText = count;
+                }
+            }, 30);
+        });
+    }
+
+    const statsSection = document.querySelector('.stats-counter-section');
+    if (statsSection && 'IntersectionObserver' in window) {
+        let hasAnimated = false;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasAnimated) {
+                    hasAnimated = true;
+                    animateCounters();
+                }
+            });
+        }, { threshold: 0.2 });
+        observer.observe(statsSection);
+    }
+})();
 </script>
 @endsection
