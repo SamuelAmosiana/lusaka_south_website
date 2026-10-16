@@ -13,6 +13,19 @@
 .hero p{font-size:1.15rem;margin-bottom:35px;opacity:.9}
 .hero-btns{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
 .core-values{background:var(--gray-100)}
+/* Value Cards with Background Images */
+.value-card{position:relative;overflow:hidden;min-height:320px;padding:0;border:2px solid transparent;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.15);transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}
+.value-card-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s ease;z-index:0}
+.value-card-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(30,90,58,.75) 0%,rgba(0,0,0,.65) 100%);transition:background .35s ease;z-index:1}
+.value-card-content{position:relative;z-index:2;padding:36px 30px 32px;height:100%;display:flex;flex-direction:column}
+.value-card .card-icon{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.45);backdrop-filter:blur(4px);margin-bottom:20px;color:#fff}
+.value-card h3{color:#fff;font-size:1.5rem;margin-bottom:12px;text-shadow:0 2px 6px rgba(0,0,0,.4)}
+.value-card p{color:rgba(255,255,255,.9);line-height:1.8;text-shadow:0 1px 4px rgba(0,0,0,.35);flex:1}
+.value-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary-orange),var(--light-orange));z-index:3;transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.value-card:hover{transform:translateY(-10px);box-shadow:0 24px 48px rgba(0,0,0,.28);border-color:var(--primary-orange)}
+.value-card:hover .value-card-bg{transform:scale(1.08)}
+.value-card:hover .value-card-overlay{background:linear-gradient(160deg,rgba(30,90,58,.58) 0%,rgba(0,0,0,.52) 100%)}
+.value-card:hover::after{transform:scaleX(1)}
 .updates-section{background:#fff}
 .campus-section{background:var(--gray-100)}
 .gallery-section{background:#fff}
@@ -42,20 +55,37 @@
             <p>The principles that guide our commitment to educational excellence and student success</p>
         </div>
         <div class="cards-grid">
-            <div class="card">
-                <div class="card-icon"><i class="fa fa-bullseye"></i></div>
-                <h3>Excellence</h3>
-                <p>We are committed to maintaining the highest standards in education, research, and student services. Our programs are designed to challenge and inspire.</p>
+            <!-- Excellence -->
+            <div class="card value-card">
+                <div class="value-card-bg" style="background-image: url('{{ asset('images/excellence.jpg') }}');"></div>
+                <div class="value-card-overlay"></div>
+                <div class="value-card-content">
+                    <div class="card-icon"><i class="fa fa-bullseye"></i></div>
+                    <h3>Excellence</h3>
+                    <p>We are committed to maintaining the highest standards in education, research, and student services. Our programs are designed to challenge and inspire.</p>
+                </div>
             </div>
-            <div class="card">
-                <div class="card-icon"><i class="fa fa-handshake"></i></div>
-                <h3>Integrity</h3>
-                <p>We uphold honesty, transparency, and ethical conduct in all our dealings. We foster a culture of trust and accountability across our institution.</p>
+
+            <!-- Integrity -->
+            <div class="card value-card">
+                <div class="value-card-bg" style="background-image: url('{{ asset('images/integrity.jpg') }}');"></div>
+                <div class="value-card-overlay"></div>
+                <div class="value-card-content">
+                    <div class="card-icon"><i class="fa fa-handshake"></i></div>
+                    <h3>Integrity</h3>
+                    <p>We uphold honesty, transparency, and ethical conduct in all our dealings. We foster a culture of trust and accountability across our institution.</p>
+                </div>
             </div>
-            <div class="card">
-                <div class="card-icon"><i class="fa fa-lightbulb"></i></div>
-                <h3>Innovation</h3>
-                <p>We embrace new ideas and technologies to enhance learning experiences. Our curriculum stays current with industry trends and global developments.</p>
+
+            <!-- Innovation -->
+            <div class="card value-card">
+                <div class="value-card-bg" style="background-image: url('{{ asset('images/innovation.jpg') }}');"></div>
+                <div class="value-card-overlay"></div>
+                <div class="value-card-content">
+                    <div class="card-icon"><i class="fa fa-lightbulb"></i></div>
+                    <h3>Innovation</h3>
+                    <p>We embrace new ideas and technologies to enhance learning experiences. Our curriculum stays current with industry trends and global developments.</p>
+                </div>
             </div>
         </div>
     </div>
