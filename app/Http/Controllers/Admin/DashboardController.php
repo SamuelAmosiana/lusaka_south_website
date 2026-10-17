@@ -17,6 +17,7 @@ class DashboardController extends Controller
             'upcoming_events' => Event::where('category', 'Upcoming Event')->count(),
             'total_faqs'      => Faq::count(),
             'total_downloads' => Download::count(),
+            'total_counters'  => \App\Models\Counter::count(),
         ];
 
         $recentEvents = Event::orderBy('created_at', 'desc')->take(5)->get();

@@ -7,8 +7,8 @@
 <style>
 .hero{background:url('{{ asset('images/lsuc site cover img.jpeg') }}') center/cover no-repeat;height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;margin-top:80px;position:relative}
 .hero::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.45)}
-.hero-content{position:relative;z-index:1;max-width:800px;padding:40px;background:rgba(0,0,0,.45);backdrop-filter:blur(5px);border-radius:20px;border:1px solid rgba(255,255,255,.3);box-shadow:0 8px 32px rgba(0,0,0,.2)}
-.hero h1{font-size:3.2rem;margin-bottom:20px;font-weight:700;text-shadow:2px 2px 4px rgba(0,0,0,.3)}
+.hero-content{position:relative;z-index:1;max-width:1200px;width:94%;padding:45px 30px;background:rgba(0,0,0,.45);backdrop-filter:blur(5px);border-radius:20px;border:1px solid rgba(255,255,255,.3);box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.hero h1{font-size:clamp(1.8rem,3.6vw,3.2rem);margin-bottom:20px;font-weight:700;text-shadow:2px 2px 4px rgba(0,0,0,.3);letter-spacing:-.5px;white-space:nowrap}
 .hero .motto{font-size:1.8rem;color:var(--light-orange);font-style:italic;margin-bottom:25px}
 .hero p{font-size:1.15rem;margin-bottom:35px;opacity:.9}
 .hero-btns{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
@@ -38,9 +38,9 @@
 .stat-number-wrapper{font-size:2.8rem;font-weight:800;line-height:1.1;color:#fff;margin-bottom:8px}
 .stat-suffix{color:var(--primary-orange);font-weight:800;margin-left:2px}
 .stat-label{font-size:1.05rem;font-weight:600;color:rgba(255,255,255,.95);letter-spacing:.5px;text-transform:capitalize}
-@media(max-width:992px){.stats-counter-grid{grid-template-columns:repeat(2,1fr);gap:20px}}
+@media(max-width:992px){.stats-counter-grid{grid-template-columns:repeat(2,1fr);gap:20px}.hero h1{white-space:normal;font-size:2.4rem}}
 @media(max-width:576px){.stats-counter-grid{grid-template-columns:1fr;gap:15px}.stat-number-wrapper{font-size:2.3rem}}
-@media(max-width:768px){.hero h1{font-size:2.2rem}.hero .motto{font-size:1.3rem}.hero-content{margin:20px;padding:25px}}
+@media(max-width:768px){.hero h1{font-size:1.85rem;white-space:normal}.hero .motto{font-size:1.25rem}.hero-content{margin:15px;padding:25px 15px;width:calc(100% - 30px)}}
 </style>
 @endsection
 
@@ -62,34 +62,46 @@
 <section class="stats-counter-section">
     <div class="container">
         <div class="stats-counter-grid">
-            <div class="stat-counter-card">
-                <div class="stat-icon"><i class="fa fa-user-graduate"></i></div>
-                <div class="stat-number-wrapper">
-                    <span class="stat-number" data-target="1000">1000</span><span class="stat-suffix">+</span>
+            @if(isset($counters) && $counters->isNotEmpty())
+                @foreach($counters as $counter)
+                <div class="stat-counter-card">
+                    <div class="stat-icon"><i class="fa {{ $counter->icon }}"></i></div>
+                    <div class="stat-number-wrapper">
+                        <span class="stat-number" data-target="{{ $counter->number }}">{{ $counter->number }}</span>@if($counter->suffix)<span class="stat-suffix">{{ $counter->suffix }}</span>@endif
+                    </div>
+                    <div class="stat-label">{{ $counter->label }}</div>
                 </div>
-                <div class="stat-label">Enrolled Students</div>
-            </div>
-            <div class="stat-counter-card">
-                <div class="stat-icon"><i class="fa fa-book-open"></i></div>
-                <div class="stat-number-wrapper">
-                    <span class="stat-number" data-target="50">50</span><span class="stat-suffix">+</span>
+                @endforeach
+            @else
+                <div class="stat-counter-card">
+                    <div class="stat-icon"><i class="fa fa-user-graduate"></i></div>
+                    <div class="stat-number-wrapper">
+                        <span class="stat-number" data-target="1000">1000</span><span class="stat-suffix">+</span>
+                    </div>
+                    <div class="stat-label">Enrolled Students</div>
                 </div>
-                <div class="stat-label">Programs Offered</div>
-            </div>
-            <div class="stat-counter-card">
-                <div class="stat-icon"><i class="fa fa-university"></i></div>
-                <div class="stat-number-wrapper">
-                    <span class="stat-number" data-target="5">5</span>
+                <div class="stat-counter-card">
+                    <div class="stat-icon"><i class="fa fa-book-open"></i></div>
+                    <div class="stat-number-wrapper">
+                        <span class="stat-number" data-target="50">50</span><span class="stat-suffix">+</span>
+                    </div>
+                    <div class="stat-label">Programs Offered</div>
                 </div>
-                <div class="stat-label">Schools</div>
-            </div>
-            <div class="stat-counter-card">
-                <div class="stat-icon"><i class="fa fa-award"></i></div>
-                <div class="stat-number-wrapper">
-                    <span class="stat-number" data-target="500">500</span><span class="stat-suffix">+</span>
+                <div class="stat-counter-card">
+                    <div class="stat-icon"><i class="fa fa-university"></i></div>
+                    <div class="stat-number-wrapper">
+                        <span class="stat-number" data-target="5">5</span>
+                    </div>
+                    <div class="stat-label">Schools</div>
                 </div>
-                <div class="stat-label">Graduated Students</div>
-            </div>
+                <div class="stat-counter-card">
+                    <div class="stat-icon"><i class="fa fa-award"></i></div>
+                    <div class="stat-number-wrapper">
+                        <span class="stat-number" data-target="500">500</span><span class="stat-suffix">+</span>
+                    </div>
+                    <div class="stat-label">Graduated Students</div>
+                </div>
+            @endif
         </div>
     </div>
 </section>

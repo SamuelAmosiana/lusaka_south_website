@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\DownloadController;
+use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Models\Faq;
 use App\Models\Download;
@@ -81,6 +82,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('events', EventController::class);
     Route::resource('faqs', FaqController::class);
     Route::resource('downloads', DownloadController::class);
+    Route::post('counters/batch-update', [CounterController::class, 'batchUpdate'])->name('counters.batch-update');
+    Route::resource('counters', CounterController::class);
 
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
     Route::get('payments/export', [AdminPaymentController::class, 'export'])->name('payments.export');

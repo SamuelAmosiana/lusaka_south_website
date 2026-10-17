@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Counter;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -14,6 +15,11 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        return view('home', compact('featuredUpdates'));
+        $counters = Counter::active()
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        return view('home', compact('featuredUpdates', 'counters'));
     }
 }

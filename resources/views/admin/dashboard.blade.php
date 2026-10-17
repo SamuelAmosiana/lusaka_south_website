@@ -7,6 +7,7 @@
     <div class="stat-card" style="border-left-color:var(--primary-green)"><i class="fa fa-calendar" style="color:var(--primary-green)"></i><h2>{{ $stats['upcoming_events'] }}</h2><p>Upcoming Events</p></div>
     <div class="stat-card" style="border-left-color:#1565c0"><i class="fa fa-circle-question" style="color:#1565c0"></i><h2>{{ $stats['total_faqs'] }}</h2><p>FAQs</p></div>
     <div class="stat-card" style="border-left-color:#7b1fa2"><i class="fa fa-download" style="color:#7b1fa2"></i><h2>{{ $stats['total_downloads'] }}</h2><p>Downloads</p></div>
+    <div class="stat-card" style="border-left-color:var(--primary-orange)"><i class="fa fa-chart-simple" style="color:var(--primary-orange)"></i><h2>{{ $stats['total_counters'] }}</h2><p>Home Counters</p></div>
 </div>
 
 <div class="card">
@@ -41,7 +42,7 @@
     <div style="margin-top:15px"><a href="{{ route('admin.events.index') }}" class="btn btn-outline">View All Events <i class="fa fa-arrow-right ms-1"></i></a></div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
     <div class="card">
         <div class="card-header"><h3><i class="fa fa-circle-question me-2"></i>FAQs</h3><a href="{{ route('admin.faqs.create') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i>Add FAQ</a></div>
         <p style="color:var(--gray-600)">{{ $stats['total_faqs'] }} FAQs in the database. <a href="{{ route('admin.faqs.index') }}">Manage FAQs</a></p>
@@ -49,6 +50,10 @@
     <div class="card">
         <div class="card-header"><h3><i class="fa fa-download me-2"></i>Downloads</h3><a href="{{ route('admin.downloads.index') }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>View All</a></div>
         <p style="color:var(--gray-600)">{{ $stats['total_downloads'] }} documents available for download. <a href="{{ route('admin.downloads.index') }}">Manage Downloads</a></p>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3><i class="fa fa-chart-simple me-2"></i>Home Counters</h3><a href="{{ route('admin.counters.index') }}" class="btn btn-orange btn-sm"><i class="fa fa-sliders"></i>Customize</a></div>
+        <p style="color:var(--gray-600)">{{ $stats['total_counters'] }} stats counters configured. <a href="{{ route('admin.counters.index') }}">Customize Counters</a></p>
     </div>
 </div>
 @endsection
