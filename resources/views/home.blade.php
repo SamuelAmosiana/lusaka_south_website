@@ -11,7 +11,9 @@
 .hero h1{font-size:clamp(1.8rem,3.6vw,3.2rem);margin-bottom:20px;font-weight:700;text-shadow:2px 2px 4px rgba(0,0,0,.3);letter-spacing:-.5px;white-space:nowrap}
 .hero .motto{font-size:1.8rem;color:var(--light-orange);font-style:italic;margin-bottom:25px}
 .hero p{font-size:1.15rem;margin-bottom:35px;opacity:.9}
-.hero-btns{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+.hero-btns{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.hero-btns a{display:inline-flex;align-items:center;justify-content:center;gap:12px}
+.hero-btns a i{font-size:1.05rem}
 .core-values{background:var(--gray-100)}
 /* Value Cards with Background Images */
 .value-card{position:relative;overflow:hidden;min-height:320px;padding:0;border:2px solid transparent;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.15);transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}
@@ -52,8 +54,8 @@
         <div class="motto">{{ config('site.tagline') }}</div>
         <p>Empowering minds, shaping futures, and building tomorrow's leaders through excellence in education and innovative learning experiences.</p>
         <div class="hero-btns">
-            <a href="{{ config('site.apply.undergraduate') }}" class="cta-button"><i class="fa fa-graduation-cap me-2"></i>Apply Now</a>
-            <a href="{{ route('schools') }}" class="cta-button-outline" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.6)"><i class="fa fa-book-open me-2"></i>Explore Programs</a>
+            <a href="{{ config('site.apply.undergraduate') }}" class="cta-button"><i class="fa fa-graduation-cap"></i> Apply Now</a>
+            <a href="{{ route('schools') }}" class="cta-button-outline" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.6)"><i class="fa fa-book-open"></i> Explore Programs</a>
         </div>
     </div>
 </section>
