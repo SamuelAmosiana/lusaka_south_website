@@ -169,73 +169,93 @@
     </div>
 </section>
 
+@if(!isset($learningSettings) || $learningSettings->is_active)
 {{-- Online and On-Campus Learning --}}
 <section class="section learning-section">
     <div class="container">
         <div class="section-title">
-            <h2>Online and On-Campus Learning</h2>
-            <p>Flexible study modes designed to empower your educational journey wherever you are.</p>
+            <h2>{{ $learningSettings->section_title ?? 'Online and On-Campus Learning' }}</h2>
+            <p>{{ $learningSettings->section_subtitle ?? 'Flexible study modes designed to empower your educational journey wherever you are.' }}</p>
         </div>
         <div class="learning-grid">
             {{-- Left Column: Information --}}
             <div class="learning-features">
-                <div class="learning-feature-item">
-                    <div class="learning-feature-icon">
-                        <i class="fa fa-laptop-code"></i>
+                @if(isset($learningFeatures) && $learningFeatures->isNotEmpty())
+                    @foreach($learningFeatures as $item)
+                    <div class="learning-feature-item">
+                        <div class="learning-feature-icon">
+                            <i class="fa {{ $item->icon }}"></i>
+                        </div>
+                        <div class="learning-feature-body">
+                            <h3>{{ $item->title }}</h3>
+                            <p>{{ $item->description }}</p>
+                        </div>
                     </div>
-                    <div class="learning-feature-body">
-                        <h3>E-Learning System</h3>
-                        <p>Classes will take place in a Virtual Learning Environment (VLE). Users can log in at any time and at their convenience. Once online, students will be able to communicate with their lecturer and fellow students, read assigned texts, access digital learning materials and the e-Library resources on a 24/7 basis, post assignments and comment on other students’ contributions to the class.</p>
+                    @endforeach
+                @else
+                    <div class="learning-feature-item">
+                        <div class="learning-feature-icon">
+                            <i class="fa fa-laptop-code"></i>
+                        </div>
+                        <div class="learning-feature-body">
+                            <h3>E-Learning System</h3>
+                            <p>Classes will take place in a Virtual Learning Environment (VLE). Users can log in at any time and at their convenience. Once online, students will be able to communicate with their lecturer and fellow students, read assigned texts, access digital learning materials and the e-Library resources on a 24/7 basis, post assignments and comment on other students’ contributions to the class.</p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="learning-feature-item">
-                    <div class="learning-feature-icon">
-                        <i class="fa fa-chalkboard-user"></i>
+                    <div class="learning-feature-item">
+                        <div class="learning-feature-icon">
+                            <i class="fa fa-chalkboard-user"></i>
+                        </div>
+                        <div class="learning-feature-body">
+                            <h3>Online Lecturers</h3>
+                            <p>Students are given the greatest possible support with dedicated online lecturers. All the lecturers are experts in their respective fields and have years of experience at the highest standard. The class lecturer will respond to all queries at a fast pace.</p>
+                        </div>
                     </div>
-                    <div class="learning-feature-body">
-                        <h3>Online Lecturers</h3>
-                        <p>Students are given the greatest possible support with dedicated online lecturers. All the lecturers are experts in their respective fields and have years of experience at the highest standard. The class lecturer will respond to all queries at a fast pace.</p>
-                    </div>
-                </div>
 
-                <div class="learning-feature-item">
-                    <div class="learning-feature-icon">
-                        <i class="fa fa-comments"></i>
+                    <div class="learning-feature-item">
+                        <div class="learning-feature-icon">
+                            <i class="fa fa-comments"></i>
+                        </div>
+                        <div class="learning-feature-body">
+                            <h3>Online Classroom</h3>
+                            <p>The online learning experience will include extensive participation and interaction with the online lecturer and fellow students.</p>
+                        </div>
                     </div>
-                    <div class="learning-feature-body">
-                        <h3>Online Classroom</h3>
-                        <p>The online learning experience will include extensive participation and interaction with the online lecturer and fellow students.</p>
-                    </div>
-                </div>
 
-                <div class="learning-feature-item">
-                    <div class="learning-feature-icon">
-                        <i class="fa fa-building-columns"></i>
+                    <div class="learning-feature-item">
+                        <div class="learning-feature-icon">
+                            <i class="fa fa-building-columns"></i>
+                        </div>
+                        <div class="learning-feature-body">
+                            <h3>On-Campus</h3>
+                            <p>For those who prefer on-campus study, Lusaka South University College goes the extra mile to enhance online learning with additional face-to-face tutorials. These tutorials take place on the fully equipped campus in Foxdale Lusaka, which boasts modern infrastructure and a technology-friendly environment. This supportive atmosphere fosters a sense of community among students, faculty, and staff, further enriching the learning experience.</p>
+                        </div>
                     </div>
-                    <div class="learning-feature-body">
-                        <h3>On-Campus</h3>
-                        <p>For those who prefer on-campus study, Lusaka South University College goes the extra mile to enhance online learning with additional face-to-face tutorials. These tutorials take place on the fully equipped campus in Foxdale Lusaka, which boasts modern infrastructure and a technology-friendly environment. This supportive atmosphere fosters a sense of community among students, faculty, and staff, further enriching the learning experience.</p>
-                    </div>
-                </div>
+                @endif
             </div>
 
             {{-- Right Column: Campus Overview Video --}}
             <div class="learning-video-container">
                 <div class="learning-video-wrapper">
-                    <video controls playsinline preload="metadata" poster="{{ asset('images/school2.jpeg') }}">
-                        <source src="{{ asset('images/campus_video.mp4') }}" type="video/mp4">
+                    @php
+                        $videoSrc = !empty($learningSettings->video_path) ? asset($learningSettings->video_path) : asset('images/campus_video.mp4');
+                        $posterSrc = !empty($learningSettings->poster_image) ? asset($learningSettings->poster_image) : asset('images/school2.jpeg');
+                    @endphp
+                    <video controls playsinline preload="metadata" poster="{{ $posterSrc }}">
+                        <source src="{{ $videoSrc }}" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>
                 <div class="learning-video-caption">
-                    <h4><i class="fa fa-circle-play"></i> Campus Overview</h4>
-                    <p>Experience world-class learning spaces, digital infrastructure, and vibrant student community at Foxdale, Lusaka.</p>
+                    <h4><i class="fa fa-circle-play"></i> {{ $learningSettings->video_title ?? 'Campus Overview' }}</h4>
+                    <p>{{ $learningSettings->video_description ?? 'Experience world-class learning spaces, digital infrastructure, and vibrant student community at Foxdale, Lusaka.' }}</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
+@endif
 
 {{-- Latest Updates --}}
 <section class="section updates-section">

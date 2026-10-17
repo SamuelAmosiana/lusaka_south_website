@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\CounterController;
+use App\Http\Controllers\Admin\LearningController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Models\Faq;
 use App\Models\Download;
@@ -84,6 +85,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('downloads', DownloadController::class);
     Route::post('counters/batch-update', [CounterController::class, 'batchUpdate'])->name('counters.batch-update');
     Route::resource('counters', CounterController::class);
+
+    // Learning Modes & Video Management
+    Route::get('learning', [LearningController::class, 'index'])->name('learning.index');
+    Route::post('learning/settings', [LearningController::class, 'updateSettings'])->name('learning.settings');
+    Route::get('learning/features/create', [LearningController::class, 'createFeature'])->name('learning.features.create');
+    Route::post('learning/features', [LearningController::class, 'storeFeature'])->name('learning.features.store');
+    Route::get('learning/features/{feature}/edit', [LearningController::class, 'editFeature'])->name('learning.features.edit');
+    Route::put('learning/features/{feature}', [LearningController::class, 'updateFeature'])->name('learning.features.update');
+    Route::delete('learning/features/{feature}', [LearningController::class, 'destroyFeature'])->name('learning.features.destroy');
+    Route::post('learning/features/batch', [LearningController::class, 'batchUpdateFeatures'])->name('learning.features.batch');
 
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
     Route::get('payments/export', [AdminPaymentController::class, 'export'])->name('payments.export');

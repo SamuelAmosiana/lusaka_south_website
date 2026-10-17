@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Counter;
+use App\Models\LearningSetting;
+use App\Models\LearningFeature;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -20,6 +22,17 @@ class HomeController extends Controller
             ->orderBy('id')
             ->get();
 
-        return view('home', compact('featuredUpdates', 'counters'));
+        $learningSettings = LearningSetting::current();
+        $learningFeatures = LearningFeature::active()
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        return view('home', compact(
+            'featuredUpdates',
+            'counters',
+            'learningSettings',
+            'learningFeatures'
+        ));
     }
 }

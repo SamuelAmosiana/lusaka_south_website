@@ -78,6 +78,7 @@
             <a href="{{ route('admin.faqs.index') }}" class="sidebar-link {{ request()->routeIs('admin.faqs*')?'active':'' }}"><i class="fa fa-circle-question"></i> FAQs</a>
             <a href="{{ route('admin.downloads.index') }}" class="sidebar-link {{ request()->routeIs('admin.downloads*')?'active':'' }}"><i class="fa fa-download"></i> Downloads</a>
             <a href="{{ route('admin.counters.index') }}" class="sidebar-link {{ request()->routeIs('admin.counters*')?'active':'' }}"><i class="fa fa-chart-simple"></i> Home Counters</a>
+            <a href="{{ route('admin.learning.index') }}" class="sidebar-link {{ request()->routeIs('admin.learning*')?'active':'' }}"><i class="fa fa-graduation-cap"></i> Online &amp; Campus</a>
             <div class="sidebar-section">Finance</div>
             <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments*')?'active':'' }}"><i class="fa fa-money-bill-wave"></i> Payments
                 @php $pendingPayments = \App\Models\Payment::where('status','pending')->count(); @endphp
