@@ -50,7 +50,7 @@
     <div class="hero-content">
         <h1>{{ config('site.name') }}</h1>
         <div class="motto">{{ config('site.tagline') }}</div>
-        <p>A premier hub for industry-aligned higher education and skills training, shaping the future of Zambia's workforce.</p>
+        <p>Empowering minds, shaping futures, and building tomorrow's leaders through excellence in education and innovative learning experiences.</p>
         <div class="hero-btns">
             <a href="{{ config('site.apply.undergraduate') }}" class="cta-button"><i class="fa fa-graduation-cap me-2"></i>Apply Now</a>
             <a href="{{ route('schools') }}" class="cta-button-outline" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.6)"><i class="fa fa-book-open me-2"></i>Explore Programs</a>
