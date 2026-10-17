@@ -40,9 +40,26 @@
 .stat-number-wrapper{font-size:2.8rem;font-weight:800;line-height:1.1;color:#fff;margin-bottom:8px}
 .stat-suffix{color:var(--primary-orange);font-weight:800;margin-left:2px}
 .stat-label{font-size:1.05rem;font-weight:600;color:rgba(255,255,255,.95);letter-spacing:.5px;text-transform:capitalize}
-@media(max-width:992px){.stats-counter-grid{grid-template-columns:repeat(2,1fr);gap:20px}.hero h1{white-space:normal;font-size:2.4rem}}
+/* Online and On-Campus Learning Section */
+.learning-section{background:#fff}
+.learning-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:45px;align-items:start}
+.learning-features{display:flex;flex-direction:column;gap:20px}
+.learning-feature-item{display:flex;gap:18px;align-items:flex-start;padding:20px;border-radius:14px;background:var(--gray-100);border-left:4px solid var(--primary-green);transition:all .3s ease}
+.learning-feature-item:hover{transform:translateX(5px);box-shadow:0 8px 24px rgba(0,0,0,.08);border-left-color:var(--primary-orange);background:#fff}
+.learning-feature-icon{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--primary-green),var(--dark-green));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;box-shadow:0 4px 12px rgba(34,139,34,.25)}
+.learning-feature-item:hover .learning-feature-icon{background:linear-gradient(135deg,var(--primary-orange),var(--light-orange))}
+.learning-feature-body h3{font-size:1.15rem;color:var(--primary-green);margin-bottom:8px;font-weight:700}
+.learning-feature-body p{font-size:.95rem;color:var(--gray-600);line-height:1.7;margin:0}
+.learning-video-container{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 15px 35px rgba(0,0,0,.12);border:1px solid var(--gray-200);position:sticky;top:100px}
+.learning-video-wrapper{position:relative;width:100%;padding-top:56.25%;background:#000}
+.learning-video-wrapper video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.learning-video-caption{padding:20px 22px;background:#fff}
+.learning-video-caption h4{font-size:1.1rem;color:var(--gray-800);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.learning-video-caption h4 i{color:var(--primary-orange)}
+.learning-video-caption p{font-size:.88rem;color:var(--gray-600);margin:0;line-height:1.5}
+@media(max-width:992px){.stats-counter-grid{grid-template-columns:repeat(2,1fr);gap:20px}.hero h1{white-space:normal;font-size:2.4rem}.learning-grid{grid-template-columns:1fr;gap:35px}.learning-video-container{position:static;max-width:650px;margin:0 auto}}
 @media(max-width:576px){.stats-counter-grid{grid-template-columns:1fr;gap:15px}.stat-number-wrapper{font-size:2.3rem}}
-@media(max-width:768px){.hero h1{font-size:1.85rem;white-space:normal}.hero .motto{font-size:1.25rem}.hero-content{margin:15px;padding:25px 15px;width:calc(100% - 30px)}}
+@media(max-width:768px){.hero h1{font-size:1.85rem;white-space:normal}.hero .motto{font-size:1.25rem}.hero-content{margin:15px;padding:25px 15px;width:calc(100% - 30px)}.learning-feature-item{padding:16px 14px;gap:14px}}
 </style>
 @endsection
 
@@ -146,6 +163,74 @@
                     <div class="card-icon"><i class="fa fa-lightbulb"></i></div>
                     <h3>Innovation</h3>
                     <p>We embrace new ideas and technologies to enhance learning experiences. Our curriculum stays current with industry trends and global developments.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- Online and On-Campus Learning --}}
+<section class="section learning-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Online and On-Campus Learning</h2>
+            <p>Flexible study modes designed to empower your educational journey wherever you are.</p>
+        </div>
+        <div class="learning-grid">
+            {{-- Left Column: Information --}}
+            <div class="learning-features">
+                <div class="learning-feature-item">
+                    <div class="learning-feature-icon">
+                        <i class="fa fa-laptop-code"></i>
+                    </div>
+                    <div class="learning-feature-body">
+                        <h3>E-Learning System</h3>
+                        <p>Classes will take place in a Virtual Learning Environment (VLE). Users can log in at any time and at their convenience. Once online, students will be able to communicate with their lecturer and fellow students, read assigned texts, access digital learning materials and the e-Library resources on a 24/7 basis, post assignments and comment on other students’ contributions to the class.</p>
+                    </div>
+                </div>
+
+                <div class="learning-feature-item">
+                    <div class="learning-feature-icon">
+                        <i class="fa fa-chalkboard-user"></i>
+                    </div>
+                    <div class="learning-feature-body">
+                        <h3>Online Lecturers</h3>
+                        <p>Students are given the greatest possible support with dedicated online lecturers. All the lecturers are experts in their respective fields and have years of experience at the highest standard. The class lecturer will respond to all queries at a fast pace.</p>
+                    </div>
+                </div>
+
+                <div class="learning-feature-item">
+                    <div class="learning-feature-icon">
+                        <i class="fa fa-comments"></i>
+                    </div>
+                    <div class="learning-feature-body">
+                        <h3>Online Classroom</h3>
+                        <p>The online learning experience will include extensive participation and interaction with the online lecturer and fellow students.</p>
+                    </div>
+                </div>
+
+                <div class="learning-feature-item">
+                    <div class="learning-feature-icon">
+                        <i class="fa fa-building-columns"></i>
+                    </div>
+                    <div class="learning-feature-body">
+                        <h3>On-Campus</h3>
+                        <p>For those who prefer on-campus study, Lusaka South University College goes the extra mile to enhance online learning with additional face-to-face tutorials. These tutorials take place on the fully equipped campus in Foxdale Lusaka, which boasts modern infrastructure and a technology-friendly environment. This supportive atmosphere fosters a sense of community among students, faculty, and staff, further enriching the learning experience.</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Right Column: Campus Overview Video --}}
+            <div class="learning-video-container">
+                <div class="learning-video-wrapper">
+                    <video controls playsinline preload="metadata" poster="{{ asset('images/school2.jpeg') }}">
+                        <source src="{{ asset('images/campus_video.mp4') }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="learning-video-caption">
+                    <h4><i class="fa fa-circle-play"></i> Campus Overview</h4>
+                    <p>Experience world-class learning spaces, digital infrastructure, and vibrant student community at Foxdale, Lusaka.</p>
                 </div>
             </div>
         </div>
