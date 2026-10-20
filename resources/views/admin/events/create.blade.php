@@ -56,7 +56,7 @@
                 <div>
                     <h3 style="font-size:1.15rem;margin:0;color:var(--primary-green)">Event Cover Image (Homepage &amp; Card Display)</h3>
                     <p style="color:var(--gray-600);font-size:.85rem;margin:2px 0 0">
-                        This image appears on the homepage updates cards, news listings, and the event header banner.
+                        This image appears as the main visual on the homepage updates cards, news listings, and event header banner.
                     </p>
                 </div>
             </div>
@@ -75,27 +75,50 @@
             </div>
         </div>
 
-        {{-- Section 2: Event Photo Gallery & Captions --}}
+        {{-- Section 2: Event Photo Gallery & Captions (Multi-photo upload) --}}
         <div class="form-section" style="background:#f8fafc;padding:22px;border-radius:12px;margin:25px 0;border:1px solid #e2e8f0">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:15px">
-                <div style="display:flex;align-items:center;gap:10px">
-                    <div style="width:36px;height:36px;border-radius:8px;background:rgba(34,139,34,.15);display:flex;align-items:center;justify-content:center;color:var(--primary-green)">
-                        <i class="fa fa-camera-retro fa-lg"></i>
-                    </div>
-                    <div>
-                        <h3 style="font-size:1.15rem;margin:0;color:var(--primary-green)">Event Photo Gallery &amp; Captions</h3>
-                        <p style="color:var(--gray-600);font-size:.85rem;margin:2px 0 0">
-                            Add extra photos taken during this event with individual descriptions/captions.
-                        </p>
-                    </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                <div style="width:36px;height:36px;border-radius:8px;background:rgba(34,139,34,.15);display:flex;align-items:center;justify-content:center;color:var(--primary-green)">
+                    <i class="fa fa-images fa-lg"></i>
                 </div>
-                <button type="button" class="btn btn-primary" onclick="addGalleryRow()" style="padding:8px 16px;font-size:.9rem">
-                    <i class="fa fa-plus me-1"></i> Add Another Photo
+                <div>
+                    <h3 style="font-size:1.15rem;margin:0;color:var(--primary-green)">Event Photo Gallery &amp; Captions</h3>
+                    <p style="color:var(--gray-600);font-size:.85rem;margin:2px 0 0">
+                        Upload multiple photos taken during this event and provide individual captions for each.
+                    </p>
+                </div>
+            </div>
+
+            {{-- Multi-photo Dropzone / Selector --}}
+            <div id="gallery_dropzone" style="border:2px dashed #94a3b8;border-radius:12px;padding:28px 20px;text-align:center;background:#ffffff;margin:18px 0;transition:all .2s ease;cursor:pointer" onclick="document.getElementById('bulk_gallery_input').click()">
+                <input type="file" id="bulk_gallery_input" multiple accept="image/jpeg,image/png,image/jpg,image/webp" style="display:none" onchange="handleBulkFiles(this.files)">
+                <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,140,0,.12);color:var(--primary-orange);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:24px">
+                    <i class="fa fa-cloud-arrow-up"></i>
+                </div>
+                <div style="font-weight:700;color:var(--gray-800);font-size:1.05rem;margin-bottom:4px">
+                    Click to Choose Photos or Drag &amp; Drop Here
+                </div>
+                <p style="color:var(--gray-600);font-size:.85rem;margin:0 0 14px">
+                    You can select <strong>more than one photo at once</strong> (hold <kbd style="background:#e2e8f0;padding:2px 6px;border-radius:4px">Ctrl</kbd> or <kbd style="background:#e2e8f0;padding:2px 6px;border-radius:4px">Shift</kbd> to pick several). JPG, PNG, WEBP supported.
+                </p>
+                <button type="button" class="btn btn-primary" style="padding:9px 24px;font-size:.9rem;pointer-events:none">
+                    <i class="fa fa-folder-open me-2"></i> Browse &amp; Select Multiple Photos
                 </button>
             </div>
 
-            <div id="gallery_container" style="display:flex;flex-direction:column;gap:14px">
-                <!-- Gallery rows will be inserted here -->
+            {{-- List of Selected Photos with Individual Captions --}}
+            <div id="gallery_container" style="display:flex;flex-direction:column;gap:12px">
+                <!-- Dynamically generated rows with preview and caption -->
+            </div>
+
+            <div id="gallery_empty_state" style="text-align:center;padding:18px;background:#f1f5f9;border-radius:10px;color:var(--gray-600);font-size:.9rem;margin-top:8px">
+                <i class="fa fa-image me-1"></i> No event gallery photos added yet. Use the upload box above to select one or multiple photos.
+            </div>
+
+            <div id="gallery_add_more_bar" style="margin-top:14px;display:none;justify-content:flex-end">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('bulk_gallery_input').click()" style="font-size:.85rem;padding:7px 16px">
+                    <i class="fa fa-plus me-1"></i> Add More Photos to Batch
+                </button>
             </div>
         </div>
 
@@ -141,67 +164,125 @@ function previewCoverImage(input) {
     }
 }
 
-let galleryIndex = 0;
-function addGalleryRow() {
+let galleryRowIndex = 0;
+
+function handleBulkFiles(files) {
+    if (!files || files.length === 0) return;
+
     const container = document.getElementById('gallery_container');
-    const rowId = 'gallery_row_' + galleryIndex;
-    
-    const row = document.createElement('div');
-    row.id = rowId;
-    row.className = 'gallery-row-card';
-    row.style.cssText = 'background:#ffffff;border:1px solid #cbd5e1;border-radius:10px;padding:16px;display:flex;gap:16px;align-items:flex-start;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.03)';
-    
-    row.innerHTML = `
-        <div style="width:100px;height:80px;border-radius:8px;border:1px dashed #94a3b8;overflow:hidden;flex-shrink:0;background:#f1f5f9;display:flex;align-items:center;justify-content:center;position:relative">
-            <img id="${rowId}_preview" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none">
-            <i id="${rowId}_icon" class="fa fa-camera" style="color:#94a3b8;font-size:24px"></i>
-        </div>
-        <div style="flex:1;display:grid;grid-template-columns:1fr 1.5fr;gap:12px">
-            <div>
-                <label style="font-size:.85rem;font-weight:600;margin-bottom:4px;display:block">Select Picture *</label>
-                <input type="file" name="gallery_images[]" class="form-control" accept="image/jpeg,image/png,image/jpg,image/webp" required onchange="previewGalleryItem(this, '${rowId}')" style="font-size:.85rem;padding:7px 10px">
+    const emptyState = document.getElementById('gallery_empty_state');
+    const addMoreBar = document.getElementById('gallery_add_more_bar');
+
+    if (emptyState) emptyState.style.display = 'none';
+    if (addMoreBar) addMoreBar.style.display = 'flex';
+
+    Array.from(files).forEach((file) => {
+        if (!file.type.match(/^image\//)) {
+            alert('File "' + file.name + '" is not an image. Only JPG, PNG, WEBP are accepted.');
+            return;
+        }
+
+        const rowId = 'gallery_item_' + galleryRowIndex++;
+        const row = document.createElement('div');
+        row.id = rowId;
+        row.className = 'gallery-item-card';
+        row.style.cssText = 'background:#ffffff;border:1px solid #cbd5e1;border-radius:10px;padding:14px;display:flex;gap:16px;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,.04);transition:all .2s ease';
+
+        const sizeFormatted = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+        row.innerHTML = `
+            <div style="width:110px;height:85px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#f1f5f9;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;position:relative">
+                <img id="${rowId}_img" src="" alt="${file.name}" style="width:100%;height:100%;object-fit:cover">
             </div>
-            <div>
-                <label style="font-size:.85rem;font-weight:600;margin-bottom:4px;display:block">Photo Caption / Note</label>
-                <input type="text" name="gallery_captions[]" class="form-control" placeholder="e.g. Guests attending opening ceremony" style="font-size:.85rem;padding:8px 12px">
+            <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:.85rem;font-weight:600;color:var(--gray-800);word-break:break-all">
+                        <i class="fa fa-image me-1" style="color:var(--primary-orange)"></i> ${escapeHtml(file.name)}
+                    </span>
+                    <span style="font-size:.75rem;background:#f1f5f9;color:var(--gray-600);padding:2px 8px;border-radius:10px;font-weight:600">
+                        ${sizeFormatted}
+                    </span>
+                </div>
+                <input type="text" name="gallery_captions[]" class="form-control" placeholder="Caption for this photo (e.g. Students demonstrating project, Keynote speaker, etc.)" style="font-size:.88rem;padding:8px 12px">
             </div>
-        </div>
-        <button type="button" onclick="removeGalleryRow('${rowId}')" title="Remove Photo" style="background:#fee2e2;color:#ef4444;border:none;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:22px;transition:all .2s ease">
-            <i class="fa fa-trash"></i>
-        </button>
-    `;
-    
-    container.appendChild(row);
-    galleryIndex++;
+            <button type="button" onclick="removeGalleryItem('${rowId}')" title="Remove photo" style="background:#fee2e2;color:#ef4444;border:none;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .2s ease">
+                <i class="fa fa-trash"></i>
+            </button>
+        `;
+
+        // Store file directly into a hidden input with DataTransfer
+        const dt = new DataTransfer();
+        dt.items.add(file);
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'file';
+        hiddenInput.name = 'gallery_images[]';
+        hiddenInput.style.display = 'none';
+        hiddenInput.files = dt.files;
+        row.appendChild(hiddenInput);
+
+        // Preview thumbnail
+        const imgElem = row.querySelector(`#${rowId}_img`);
+        imgElem.src = URL.createObjectURL(file);
+
+        container.appendChild(row);
+    });
+
+    document.getElementById('bulk_gallery_input').value = '';
 }
 
-function previewGalleryItem(input, rowId) {
-    const previewImg = document.getElementById(rowId + '_preview');
-    const previewIcon = document.getElementById(rowId + '_icon');
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            previewImg.src = e.target.result;
-            previewImg.style.display = 'block';
-            if (previewIcon) previewIcon.style.display = 'none';
-        };
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        previewImg.style.display = 'none';
-        if (previewIcon) previewIcon.style.display = 'block';
-    }
-}
-
-function removeGalleryRow(rowId) {
+function removeGalleryItem(rowId) {
     const row = document.getElementById(rowId);
     if (row) {
         row.remove();
     }
+    const container = document.getElementById('gallery_container');
+    const emptyState = document.getElementById('gallery_empty_state');
+    const addMoreBar = document.getElementById('gallery_add_more_bar');
+
+    if (container.children.length === 0) {
+        if (emptyState) emptyState.style.display = 'block';
+        if (addMoreBar) addMoreBar.style.display = 'none';
+    }
 }
 
-// Add one empty row initially
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+// Drag & drop support
 document.addEventListener('DOMContentLoaded', function() {
-    addGalleryRow();
+    const dropzone = document.getElementById('gallery_dropzone');
+    if (dropzone) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.style.borderColor = 'var(--primary-orange)';
+                dropzone.style.background = 'rgba(255,140,0,.05)';
+            }, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.style.borderColor = '#94a3b8';
+                dropzone.style.background = '#ffffff';
+            }, false);
+        });
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleBulkFiles(files);
+        }, false);
+    }
 });
 </script>
 @endsection

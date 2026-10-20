@@ -53,8 +53,8 @@ class EventController extends Controller
 
         // Handle Extra Gallery Images with Captions
         if ($request->hasFile('gallery_images')) {
-            $galleryFiles = $request->file('gallery_images');
-            $captions = $request->input('gallery_captions', []);
+            $galleryFiles = array_values($request->file('gallery_images'));
+            $captions = array_values($request->input('gallery_captions', []));
 
             foreach ($galleryFiles as $index => $file) {
                 if ($file && $file->isValid()) {
@@ -145,8 +145,8 @@ class EventController extends Controller
 
         // Handle Newly Uploaded Gallery Images with Captions
         if ($request->hasFile('gallery_images')) {
-            $galleryFiles = $request->file('gallery_images');
-            $captions = $request->input('gallery_captions', []);
+            $galleryFiles = array_values($request->file('gallery_images'));
+            $captions = array_values($request->input('gallery_captions', []));
             $currentMaxOrder = (int) $event->images()->max('sort_order');
 
             foreach ($galleryFiles as $index => $file) {
