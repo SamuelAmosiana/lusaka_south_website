@@ -23,7 +23,7 @@
                 <label>Category *</label>
                 <select name="category" class="form-control" required>
                     @foreach(['Latest News','Upcoming Event','Past Event','Job Vacancy'] as $cat)
-                    <option value="{{ $cat }}" {{ old('category',$event->category??'')====$cat?'selected':'' }}>{{ $cat }}</option>
+                    <option value="{{ $cat }}" {{ old('category',$event->category??'')===$cat?'selected':'' }}>{{ $cat }}</option>
                     @endforeach
                 </select>
             </div>
