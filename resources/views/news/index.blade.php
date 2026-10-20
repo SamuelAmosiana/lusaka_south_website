@@ -11,6 +11,7 @@
 .badge-upcoming{background:#e8f5e9;color:#2e7d32}
 .badge-past{background:#fce4ec;color:#b71c1c}
 .badge-job{background:#fff3e0;color:#e65100}
+.update-card:hover .update-image img{transform:scale(1.06)}
 </style>
 @endsection
 @section('content')
@@ -44,7 +45,18 @@
     <div class="updates-grid">
         @foreach($latestNews as $event)
         <div class="update-card">
-            <div class="update-image"><i class="fa fa-newspaper fa-3x"></i></div>
+            <div class="update-image" style="position:relative;overflow:hidden">
+                @if(!empty($event->image) && file_exists(public_path($event->image)))
+                    <img src="{{ asset($event->image) }}" alt="{{ $event->title }}" style="width:100%;height:100%;object-fit:cover;transition:transform .3s ease">
+                @else
+                    <i class="fa fa-newspaper fa-3x"></i>
+                @endif
+                @if($event->images->isNotEmpty())
+                    <span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:600">
+                        <i class="fa fa-camera me-1"></i> {{ $event->images->count() }} {{ Str::plural('photo', $event->images->count()) }}
+                    </span>
+                @endif
+            </div>
             <div class="update-content">
                 <span class="category-badge badge-news">{{ $event->category }}</span>
                 <div class="update-date" style="margin-top:8px"><i class="fa fa-calendar me-1"></i>{{ $event->date->format('F j, Y') }}</div>
@@ -64,7 +76,18 @@
     <div class="updates-grid">
         @foreach($upcomingEvents as $event)
         <div class="update-card">
-            <div class="update-image" style="background:linear-gradient(135deg,#ff8c00,#ffb347)"><i class="fa fa-calendar-days fa-3x"></i></div>
+            <div class="update-image" style="position:relative;overflow:hidden;background:linear-gradient(135deg,#ff8c00,#ffb347)">
+                @if(!empty($event->image) && file_exists(public_path($event->image)))
+                    <img src="{{ asset($event->image) }}" alt="{{ $event->title }}" style="width:100%;height:100%;object-fit:cover;transition:transform .3s ease">
+                @else
+                    <i class="fa fa-calendar-days fa-3x"></i>
+                @endif
+                @if($event->images->isNotEmpty())
+                    <span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:600">
+                        <i class="fa fa-camera me-1"></i> {{ $event->images->count() }} {{ Str::plural('photo', $event->images->count()) }}
+                    </span>
+                @endif
+            </div>
             <div class="update-content">
                 <span class="category-badge badge-upcoming">{{ $event->category }}</span>
                 <div class="update-date" style="margin-top:8px"><i class="fa fa-calendar me-1"></i>{{ $event->date->format('F j, Y') }}</div>
@@ -83,8 +106,19 @@
     </div>
     <div class="updates-grid">
         @foreach($pastEvents as $event)
-        <div class="update-card" style="opacity:.85">
-            <div class="update-image" style="background:linear-gradient(135deg,#757575,#9e9e9e)"><i class="fa fa-calendar-check fa-3x"></i></div>
+        <div class="update-card" style="opacity:.92">
+            <div class="update-image" style="position:relative;overflow:hidden;background:linear-gradient(135deg,#757575,#9e9e9e)">
+                @if(!empty($event->image) && file_exists(public_path($event->image)))
+                    <img src="{{ asset($event->image) }}" alt="{{ $event->title }}" style="width:100%;height:100%;object-fit:cover;transition:transform .3s ease">
+                @else
+                    <i class="fa fa-calendar-check fa-3x"></i>
+                @endif
+                @if($event->images->isNotEmpty())
+                    <span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:600">
+                        <i class="fa fa-camera me-1"></i> {{ $event->images->count() }} {{ Str::plural('photo', $event->images->count()) }}
+                    </span>
+                @endif
+            </div>
             <div class="update-content">
                 <span class="category-badge badge-past">{{ $event->category }}</span>
                 <div class="update-date" style="margin-top:8px"><i class="fa fa-calendar me-1"></i>{{ $event->date->format('F j, Y') }}</div>

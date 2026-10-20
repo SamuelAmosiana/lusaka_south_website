@@ -13,6 +13,7 @@ class HomeController extends Controller
     public function index()
     {
         $featuredUpdates = Event::featured()
+            ->with('images')
             ->orderBy('date', 'desc')
             ->take(3)
             ->get();

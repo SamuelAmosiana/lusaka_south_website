@@ -9,7 +9,7 @@ class NewsController extends Controller
 {
     public function index(Request $request)
     {
-        $query  = Event::query()->orderBy('date', 'desc');
+        $query  = Event::query()->with('images')->orderBy('date', 'desc');
         $filter = $request->get('filter', 'all');
         $search = $request->get('search', '');
 
@@ -37,6 +37,8 @@ class NewsController extends Controller
 
     public function show(Event $event)
     {
+        $event->load('images');
+
         $relatedEvents = Event::where('id', '!=', $event->id)
             ->where('category', $event->category)
             ->orderBy('date', 'desc')

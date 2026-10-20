@@ -25,4 +25,17 @@ class Event extends Model
     {
         return $query->where('category', $category);
     }
+
+    public function images()
+    {
+        return $this->hasMany(EventImage::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function getCoverImageUrlAttribute(): ?string
+    {
+        if ($this->image && file_exists(public_path($this->image))) {
+            return asset($this->image);
+        }
+        return null;
+    }
 }

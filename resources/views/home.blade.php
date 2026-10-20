@@ -267,8 +267,17 @@
         <div class="updates-grid">
             @forelse($featuredUpdates as $event)
             <div class="update-card">
-                <div class="update-image">
-                    <i class="fa fa-newspaper fa-3x"></i>
+                <div class="update-image" style="position:relative;overflow:hidden">
+                    @if(!empty($event->image) && file_exists(public_path($event->image)))
+                        <img src="{{ asset($event->image) }}" alt="{{ $event->title }}" style="width:100%;height:100%;object-fit:cover;transition:transform .3s ease">
+                    @else
+                        <i class="fa fa-newspaper fa-3x"></i>
+                    @endif
+                    @if($event->images->isNotEmpty())
+                        <span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:600">
+                            <i class="fa fa-camera me-1"></i> {{ $event->images->count() }} {{ Str::plural('photo', $event->images->count()) }}
+                        </span>
+                    @endif
                 </div>
                 <div class="update-content">
                     <div class="update-date">
