@@ -303,7 +303,7 @@
             @endforelse
         </div>
         <div style="text-align:center;margin-top:40px">
-            <a href="{{ route('news') }}" class="cta-button"><i class="fa fa-newspaper me-2"></i>View All News &amp; Events</a>
+            <a href="{{ route('news') }}" class="cta-button"><i class="fa fa-newspaper me-2" style="margin-right:8px"></i>View All News &amp; Events</a>
         </div>
     </div>
 </section>
