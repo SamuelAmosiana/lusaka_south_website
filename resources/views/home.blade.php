@@ -83,6 +83,23 @@
 .scholarship-more-link{display:inline-flex;align-items:center;gap:8px;margin-top:14px;color:var(--primary-orange);font-weight:700}
 @media(max-width:992px){.scholarship-intro{grid-template-columns:1fr;gap:30px}.scholarship-cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:576px){.scholarship-cards{grid-template-columns:1fr}.scholarship-intro-text h2{font-size:1.8rem}.scholarship-stat strong{font-size:2rem}}
+/* Get in Touch Section */
+.contact-home-section{background:var(--gray-100);scroll-margin-top:80px}
+.contact-home-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:30px;align-items:start}
+.contact-home-card{background:#fff;border-radius:15px;padding:35px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.contact-home-card h3{color:var(--primary-green);font-size:1.4rem;margin-bottom:25px;display:flex;align-items:center;gap:10px}
+.contact-home-card h3 i{color:var(--primary-orange)}
+.contact-info-card{background:linear-gradient(135deg,var(--dark-green),var(--primary-green));color:#fff}
+.contact-info-card h3{color:#fff}
+.contact-info-item{display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.15)}
+.contact-info-item:last-child{border-bottom:none;padding-bottom:0}
+.contact-info-item>i{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--light-orange)}
+.contact-info-item div{display:flex;flex-direction:column;gap:3px;line-height:1.6;min-width:0}
+.contact-info-item strong{font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;color:var(--light-orange)}
+.contact-info-item a{color:#fff;text-decoration:none;overflow-wrap:anywhere}
+.contact-info-item a:hover{color:var(--light-orange)}
+@media(max-width:992px){.contact-home-grid{grid-template-columns:1fr}}
+@media(max-width:576px){.contact-home-card{padding:25px 18px}}
 @media(max-width:992px){.stats-counter-grid{grid-template-columns:repeat(2,1fr);gap:20px}.hero h1{white-space:normal;font-size:2.4rem}.learning-grid{grid-template-columns:1fr;gap:35px}.learning-video-container{position:static;max-width:650px;margin:0 auto}}
 @media(max-width:576px){.stats-counter-grid{grid-template-columns:1fr;gap:15px}.stat-number-wrapper{font-size:2.3rem}}
 @media(max-width:768px){.hero h1{font-size:1.85rem;white-space:normal}.hero .motto{font-size:1.25rem}.hero-content{margin:15px;padding:25px 15px;width:calc(100% - 30px)}.learning-feature-item{padding:16px 14px;gap:14px}}
@@ -456,6 +473,53 @@
         </div>
         <div style="text-align:center;margin-top:40px">
             <a href="{{ route('gallery') }}" class="cta-button"><i class="fa fa-images me-2"></i>View Full Gallery</a>
+        </div>
+    </div>
+</section>
+
+{{-- Get in Touch --}}
+<section class="section contact-home-section" id="contact-form">
+    <div class="container">
+        <div class="section-title">
+            <h2>Get in Touch</h2>
+            <p>Have a question about admissions, programmes or scholarships? Reach out and our team will get back to you.</p>
+        </div>
+        <div class="contact-home-grid">
+            <div class="contact-home-card contact-info-card">
+                <h3><i class="fa fa-building-columns"></i> Main Office</h3>
+                <div class="contact-info-item">
+                    <i class="fa fa-location-dot"></i>
+                    <div><strong>Address</strong><span>{!! collect(config('site.contact.address'))->map(fn($l) => e($l))->implode('<br>') !!}</span></div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fa fa-phone"></i>
+                    <div><strong>Phone</strong><a href="tel:{{ preg_replace('/[^+\d]/', '', config('site.contact.phone')) }}">{{ config('site.contact.phone') }}</a></div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fa fa-envelope"></i>
+                    <div><strong>Email</strong><a href="mailto:{{ config('site.contact.email') }}">{{ config('site.contact.email') }}</a></div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fa fa-user-graduate"></i>
+                    <div><strong>To talk to Enrolments, Call</strong>
+                        @foreach(config('site.contact.enrolments') as $number)
+                        <a href="tel:{{ preg_replace('/[^+\d]/', '', $number) }}">{{ $number }}</a>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fa fa-clock"></i>
+                    <div><strong>Office Hours</strong>
+                        @foreach(config('site.contact.office_hours') as $hours)
+                        <span>{{ $hours }}</span>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <div class="contact-home-card">
+                <h3><i class="fa fa-paper-plane"></i> Send Us a Message</h3>
+                @include('partials.contact-form')
+            </div>
         </div>
     </div>
 </section>

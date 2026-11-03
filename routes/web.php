@@ -62,7 +62,7 @@ Route::get('/e-resources', fn() => view('e-resources'))->name('e-resources');
 
 // Contact
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 
 // Pay Online
 Route::view('/pay-online', 'pay.index')->name('pay.online');

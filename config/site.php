@@ -19,6 +19,16 @@ return [
     'elearning'      => 'https://elearning.lsc.edu.zm/login/index.php',
     'research'       => 'https://demo.dspace.org/home',
 
+    // "Get in Touch" section and contact form. Messages from the website
+    // contact forms are emailed to contact.email.
+    'contact' => [
+        'email'        => env('CONTACT_EMAIL', 'lusakasouthunivesitycollege@gmail.com'),
+        'phone'        => '+260-211-123457',
+        'address'      => ['Lusaka South University College', 'Foxdale, Corner of Zambezi & Mutumbi Road', 'Lusaka, Zambia'],
+        'enrolments'   => ['+260 770 359518', '+260 97 8936644', '+260 774 110922', '+260 97 1494567'],
+        'office_hours' => ['Monday - Friday: 8:00 AM - 5:00 PM', 'Saturday: 8:00 AM - 1:00 PM'],
+    ],
+
     // External application forms (the /apply/* pages redirect here)
     'apply' => [
         'undergraduate'      => 'https://lsc.edu.zm/#undergraduate-application',

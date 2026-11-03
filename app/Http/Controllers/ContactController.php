@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMessage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
@@ -15,24 +17,36 @@ class ContactController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        // Both the home page and /contact post here; send people back to the form they used
+        $back = fn() => redirect()->to(url()->previous())->withFragment('contact-form');
+
+        // Honeypot: real visitors never see or fill this field
+        if ($request->filled('website')) {
+            return $back()->with('success', 'Thank you! Your message has been received.');
+        }
+
+        $validator = Validator::make($request->all(), [
             'name'    => 'required|string|max:255',
             'email'   => 'required|email|max:255',
             'phone'   => 'nullable|string|max:30',
             'subject' => 'required|string|max:255',
-            'message' => 'required|string|min:10',
+            'message' => 'required|string|min:10|max:5000',
         ]);
 
-        // Log for development; switch MAIL_MAILER to smtp in .env for production
-        Log::info('Contact Form Submission', [
-            'from'    => $data['email'],
-            'name'    => $data['name'],
-            'subject' => $data['subject'],
-            'message' => $data['message'],
-        ]);
+        if ($validator->fails()) {
+            return $back()->withErrors($validator)->withInput();
+        }
 
-        // Mail::to(config('site.admissions_email'))->send(new \App\Mail\ContactMail($data));
+        $data = $validator->validated();
 
-        return back()->with('success', 'Thank you, ' . $data['name'] . '! Your message has been received. We will get back to you within 2-3 business days.');
+        try {
+            Mail::to(config('site.contact.email'))->send(new ContactMessage($data));
+        } catch (\Throwable $e) {
+            Log::error('Contact form email failed', ['error' => $e->getMessage(), 'from' => $data['email']]);
+
+            return $back()->withInput()->with('contact_error', 'Sorry, we could not send your message right now. Please try again later or call us on ' . config('site.contact.phone') . '.');
+        }
+
+        return $back()->with('success', 'Thank you, ' . $data['name'] . '! Your message has been sent. We will get back to you within 2-3 business days.');
     }
 }

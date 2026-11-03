@@ -9,9 +9,6 @@
     <a href="{{ route('home') }}">Home</a> &rsaquo; Contact
 </div></div>
 <section class="content-section"><div class="container">
-    @if(session('success'))
-    <div class="alert-success"><i class="fa fa-circle-check me-2"></i>{!! session('success') !!}</div>
-    @endif
     <div class="section-title"><h2>Get In Touch</h2>
         <p>Our team is ready to assist you with admissions, academics, finance and more.</p>
     </div>
@@ -54,52 +51,10 @@
     </div>
 
     {{-- Contact Form --}}
-    <div style="max-width:700px;margin:60px auto 0">
+    <div id="contact-form" style="max-width:700px;margin:60px auto 0;scroll-margin-top:100px">
         <h2 style="color:var(--primary-green);text-align:center;margin-bottom:30px"><i class="fa fa-envelope me-2"></i>Send Us a Message</h2>
         <div style="background:#fff;padding:40px;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.08)">
-            <form method="POST" action="{{ route('contact.store') }}">
-                @csrf
-                @if($errors->any())
-                <div class="alert-error"><i class="fa fa-triangle-exclamation me-2"></i>Please fix the errors below.</div>
-                @endif
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Full Name *</label>
-                        <input type="text" id="name" name="name" value="{{ old('name') }}" required placeholder="Your full name">
-                        @error('name')<span style="color:#d32f2f;font-size:.85rem">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="your@email.com">
-                        @error('email')<span style="color:#d32f2f;font-size:.85rem">{{ $message }}</span>@enderror
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="+260-XXX-XXX-XXX">
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Subject *</label>
-                        <select id="subject" name="subject" required>
-                            <option value="">Select Subject</option>
-                            <option value="Admissions Inquiry" {{ old('subject')==='Admissions Inquiry'?'selected':'' }}>Admissions Inquiry</option>
-                            <option value="Program Information" {{ old('subject')==='Program Information'?'selected':'' }}>Program Information</option>
-                            <option value="Fees & Payment" {{ old('subject')==='Fees & Payment'?'selected':'' }}>Fees &amp; Payment</option>
-                            <option value="Student Portal Support" {{ old('subject')==='Student Portal Support'?'selected':'' }}>Student Portal Support</option>
-                            <option value="Corporate Training" {{ old('subject')==='Corporate Training'?'selected':'' }}>Corporate Training</option>
-                            <option value="General Inquiry" {{ old('subject')==='General Inquiry'?'selected':'' }}>General Inquiry</option>
-                        </select>
-                        @error('subject')<span style="color:#d32f2f;font-size:.85rem">{{ $message }}</span>@enderror
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message *</label>
-                    <textarea id="message" name="message" rows="5" required placeholder="How can we help you?">{{ old('message') }}</textarea>
-                    @error('message')<span style="color:#d32f2f;font-size:.85rem">{{ $message }}</span>@enderror
-                </div>
-                <button type="submit" class="submit-btn"><i class="fa fa-paper-plane me-2"></i>Send Message</button>
-            </form>
+            @include('partials.contact-form')
         </div>
     </div>
 </div></section>
