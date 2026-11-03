@@ -22,7 +22,7 @@ return [
     // "Get in Touch" section and contact form. Messages from the website
     // contact forms are emailed to contact.email.
     'contact' => [
-        'email'        => env('CONTACT_EMAIL', 'lusakasouthunivesitycollege@gmail.com'),
+        'email'        => env('CONTACT_EMAIL', 'lusakasouthuniversitycollege@gmail.com'),
         'phone'        => '+260-211-123457',
         'address'      => ['Lusaka South University College', 'Foxdale, Corner of Zambezi & Mutumbi Road', 'Lusaka, Zambia'],
         'enrolments'   => ['+260 770 359518', '+260 97 8936644', '+260 774 110922', '+260 97 1494567'],
