@@ -129,9 +129,44 @@
             @error('short_description')<small style="color:#dc3545">{{ $message }}</small>@enderror
         </div>
 
-        <div class="form-group">
-            <label>Full Description * <small style="color:var(--gray-600)">(HTML formatting supported)</small></label>
-            <textarea name="full_description" class="form-control" rows="10" placeholder="Detailed article or event information..." required>{{ old('full_description') }}</textarea>
+        <div class="form-group" style="margin-top:22px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:10px">
+                <label style="margin-bottom:0">Full Description * <small style="color:var(--gray-600)">(HTML formatting supported)</small></label>
+                <div style="display:flex;background:#e2e8f0;padding:3px;border-radius:8px;gap:4px">
+                    <button type="button" id="btn_mode_write" onclick="setEditorMode('write')" style="background:#fff;color:var(--primary-green);border:none;padding:5px 14px;border-radius:6px;font-size:.82rem;font-weight:700;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+                        <i class="fa fa-pen me-1"></i> Write HTML
+                    </button>
+                    <button type="button" id="btn_mode_preview" onclick="setEditorMode('preview')" style="background:transparent;color:var(--gray-600);border:none;padding:5px 14px;border-radius:6px;font-size:.82rem;font-weight:700;cursor:pointer">
+                        <i class="fa fa-eye me-1"></i> Live Preview
+                    </button>
+                </div>
+            </div>
+
+            {{-- Formatting Toolbar --}}
+            <div id="editor_toolbar" style="background:#f1f5f9;border:1px solid #cbd5e1;border-bottom:none;border-radius:8px 8px 0 0;padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                <button type="button" class="tool-btn" onclick="wrapText('<b>','</b>')" title="Bold text"><i class="fa fa-bold"></i></button>
+                <button type="button" class="tool-btn" onclick="wrapText('<i>','</i>')" title="Italic text"><i class="fa fa-italic"></i></button>
+                <button type="button" class="tool-btn" onclick="wrapText('<u>','</u>')" title="Underline text"><i class="fa fa-underline"></i></button>
+                <span style="height:20px;width:1px;background:#cbd5e1;margin:0 4px"></span>
+                <button type="button" class="tool-btn" onclick="wrapText('<h2>','</h2>')" title="Heading 2 (H2)"><b>H2</b></button>
+                <button type="button" class="tool-btn" onclick="wrapText('<h3>','</h3>')" title="Heading 3 (H3)"><b>H3</b></button>
+                <button type="button" class="tool-btn" onclick="wrapText('<h4>','</h4>')" title="Subheading (H4)"><b>H4</b></button>
+                <button type="button" class="tool-btn" onclick="wrapText('<p>','</p>')" title="Paragraph tag">&lt;p&gt;</button>
+                <span style="height:20px;width:1px;background:#cbd5e1;margin:0 4px"></span>
+                <button type="button" class="tool-btn" onclick="insertBulletList()" title="Bullet list"><i class="fa fa-list-ul"></i></button>
+                <button type="button" class="tool-btn" onclick="insertNumberedList()" title="Numbered list"><i class="fa fa-list-ol"></i></button>
+                <button type="button" class="tool-btn" onclick="wrapText('<blockquote>','</blockquote>')" title="Quote block"><i class="fa fa-quote-left"></i></button>
+                <button type="button" class="tool-btn" onclick="insertRawText('<br>\n')" title="Line break"><i class="fa fa-arrow-turn-down"></i></button>
+                <button type="button" class="tool-btn" onclick="insertLink()" title="Hyperlink"><i class="fa fa-link"></i></button>
+            </div>
+
+            <textarea name="full_description" id="full_description" class="form-control" rows="12" placeholder="Detailed article or event information..." required style="border-radius:0 0 8px 8px;font-family:'Segoe UI',sans-serif;line-height:1.7">{{ old('full_description') }}</textarea>
+
+            {{-- Live Preview Box --}}
+            <div id="full_description_preview" style="display:none;background:#ffffff;border:2px solid var(--primary-green);border-radius:8px;padding:25px;min-height:280px;box-shadow:0 4px 15px rgba(0,0,0,.05)">
+                <!-- Live preview injected here -->
+            </div>
+
             @error('full_description')<small style="color:#dc3545">{{ $message }}</small>@enderror
         </div>
 
@@ -282,7 +317,163 @@ document.addEventListener('DOMContentLoaded', function() {
             const files = dt.files;
             handleBulkFiles(files);
         }, false);
+// Full Description Formatting & Live Preview Tools
+function wrapText(openTag, closeTag) {
+    const textarea = document.getElementById('full_description');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selectedText = text.substring(start, end);
+    const replacement = openTag + (selectedText.length > 0 ? selectedText : 'text') + closeTag;
+    
+    textarea.value = text.substring(0, start) + replacement + text.substring(end);
+    textarea.focus();
+    const cursorOffset = selectedText.length > 0 ? start + replacement.length : start + openTag.length + 4;
+    textarea.setSelectionRange(cursorOffset, cursorOffset);
+}
+
+function insertRawText(textToInsert) {
+    const textarea = document.getElementById('full_description');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    textarea.value = text.substring(0, start) + textToInsert + text.substring(end);
+    textarea.focus();
+    textarea.setSelectionRange(start + textToInsert.length, start + textToInsert.length);
+}
+
+function insertBulletList() {
+    wrapText("<ul>\n  <li>", "</li>\n  <li>Second item</li>\n</ul>\n");
+}
+
+function insertNumberedList() {
+    wrapText("<ol>\n  <li>", "</li>\n  <li>Second item</li>\n</ol>\n");
+}
+
+function insertLink() {
+    const url = prompt("Enter web link URL:", "https://");
+    if (url) {
+        wrapText('<a href="' + url + '">', '</a>');
     }
-});
+}
+
+function setEditorMode(mode) {
+    const writeBtn = document.getElementById('btn_mode_write');
+    const prevBtn = document.getElementById('btn_mode_preview');
+    const textarea = document.getElementById('full_description');
+    const toolbar = document.getElementById('editor_toolbar');
+    const preview = document.getElementById('full_description_preview');
+
+    if (mode === 'preview') {
+        writeBtn.style.background = 'transparent';
+        writeBtn.style.color = 'var(--gray-600)';
+        writeBtn.style.boxShadow = 'none';
+        prevBtn.style.background = '#fff';
+        prevBtn.style.color = 'var(--primary-green)';
+        prevBtn.style.boxShadow = '0 1px 3px rgba(0,0,0,.08)';
+
+        toolbar.style.display = 'none';
+        textarea.style.display = 'none';
+        preview.style.display = 'block';
+
+        renderLivePreview(textarea.value);
+    } else {
+        prevBtn.style.background = 'transparent';
+        prevBtn.style.color = 'var(--gray-600)';
+        prevBtn.style.boxShadow = 'none';
+        writeBtn.style.background = '#fff';
+        writeBtn.style.color = 'var(--primary-green)';
+        writeBtn.style.boxShadow = '0 1px 3px rgba(0,0,0,.08)';
+
+        toolbar.style.display = 'flex';
+        textarea.style.display = 'block';
+        preview.style.display = 'none';
+        textarea.focus();
+    }
+}
+
+function renderLivePreview(raw) {
+    const preview = document.getElementById('full_description_preview');
+    if (!raw || raw.trim().length === 0) {
+        preview.innerHTML = '<p style="color:#94a3b8;font-style:italic">No content entered yet. Switch back to "Write HTML" to type content.</p>';
+        return;
+    }
+
+    let clean = raw.replace(/\r\n|\r/g, '\n');
+    clean = clean.replace(/(?:[ \t]*<br\s*\/?>[ \t]*\n*){2,}/gi, '\n\n');
+    clean = clean.replace(/(<\/(?:p|h[1-6]|ul|ol|li|blockquote)>)[ \t]*(?:<br\s*\/?>[ \t]*)+/gi, '$1');
+
+    const chunks = clean.split(/\n{2,}/);
+    const formatted = [];
+
+    chunks.forEach(chunk => {
+        chunk = chunk.trim();
+        if (!chunk) return;
+
+        if (chunk.match(/^<(?:p|h[1-6]|ul|ol|blockquote|hr|div|table)[^>]*>/i)) {
+            chunk = chunk.replace(/(?:<br\s*\/?>[ \t]*)+$/i, '');
+            if (chunk.match(/^<p[^>]*>/i) && !chunk.match(/<\/p>$/i)) {
+                chunk += '</p>';
+            }
+            formatted.push(chunk);
+        } else {
+            chunk = chunk.replace(/(?:<\/(?:p|div)>|<br\s*\/?>[ \t]*)+$/i, '');
+            chunk = chunk.replace(/^<\/(?:p|div)>\s*/i, '');
+            chunk = chunk.trim();
+            if (chunk) {
+                formatted.push('<p>' + chunk.replace(/\n/g, '<br>') + '</p>');
+            }
+        }
+    });
+
+    preview.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;margin-bottom:18px;border-bottom:1px solid #e2e8f0">
+            <span style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--primary-orange);font-weight:700">
+                <i class="fa fa-eye me-1"></i> Live Website Simulation
+            </span>
+            <span style="font-size:12px;color:var(--gray-600)">Renders exactly as seen by visitors</span>
+        </div>
+        <div class="detail-full">
+            ${formatted.join('\n\n')}
+        </div>
+    `;
+}
 </script>
+
+<style>
+.tool-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 4px 9px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+}
+.tool-btn:hover {
+    background: var(--primary-green);
+    color: #ffffff;
+    border-color: var(--primary-green);
+}
+/* Live Preview Container Typography */
+#full_description_preview .detail-full { font-size: 1.05rem; line-height: 1.85; color: #334155; }
+#full_description_preview .detail-full p { margin-top: 0 !important; margin-bottom: 1.4rem !important; line-height: 1.85 !important; }
+#full_description_preview .detail-full b, #full_description_preview .detail-full strong { font-weight: 700 !important; color: #0f172a !important; }
+#full_description_preview .detail-full p > b:only-child, #full_description_preview .detail-full p > strong:only-child, #full_description_preview .detail-full > b, #full_description_preview .detail-full > strong {
+    display: inline-block !important; font-size: 1.25rem !important; color: var(--primary-green) !important; font-weight: 700 !important; margin-top: 1.5rem !important; margin-bottom: 0.6rem !important; line-height: 1.4 !important;
+}
+#full_description_preview .detail-full br { display: block !important; content: "" !important; margin-top: 0.9rem !important; }
+#full_description_preview .detail-full h2 { font-size: 1.55rem; color: var(--primary-green); font-weight: 700; border-bottom: 2px solid var(--primary-orange); padding-bottom: 6px; margin: 1.8rem 0 0.8rem; }
+#full_description_preview .detail-full h3 { font-size: 1.35rem; color: var(--primary-green); font-weight: 700; margin: 1.8rem 0 0.8rem; }
+#full_description_preview .detail-full h4 { font-size: 1.18rem; color: var(--primary-orange); font-weight: 700; margin: 1.5rem 0 0.6rem; }
+#full_description_preview .detail-full ul, #full_description_preview .detail-full ol { margin: 1.2rem 0 1.5rem 1.8rem; padding-left: 10px; }
+#full_description_preview .detail-full li { margin-bottom: 0.5rem; }
+</style>
 @endsection
