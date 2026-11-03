@@ -57,6 +57,32 @@
 .learning-video-caption h4{font-size:1.1rem;color:var(--gray-800);margin-bottom:6px;display:flex;align-items:center;gap:8px}
 .learning-video-caption h4 i{color:var(--primary-orange)}
 .learning-video-caption p{font-size:.88rem;color:var(--gray-600);margin:0;line-height:1.5}
+/* Scholarships Section */
+.scholarships-section{background:linear-gradient(135deg,var(--dark-green) 0%,var(--primary-green) 100%);color:#fff}
+.scholarship-intro{display:grid;grid-template-columns:1.4fr 1fr;gap:45px;align-items:center;margin-bottom:50px}
+.scholarship-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:6px 16px;border-radius:50px;font-size:.85rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
+.scholarship-intro-text h2{font-size:2.3rem;line-height:1.25;margin-bottom:15px}
+.scholarship-lead{font-size:1.15rem;color:var(--light-orange);font-weight:600;margin-bottom:15px}
+.scholarship-intro-text p{line-height:1.8;opacity:.95}
+.scholarship-btns{display:flex;gap:15px;flex-wrap:wrap;margin-top:28px}
+.cta-button-light{background:transparent;color:#fff;border:2px solid #fff;padding:13px 36px;border-radius:50px;font-size:1.1rem;font-weight:600;text-decoration:none;display:inline-block;transition:all .3s ease}
+.cta-button-light:hover{background:#fff;color:var(--primary-green)}
+.scholarship-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.scholarship-stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:15px;padding:24px 15px;text-align:center}
+.scholarship-stat strong{display:block;font-size:2.4rem;font-weight:800;color:var(--light-orange);line-height:1.1;margin-bottom:6px}
+.scholarship-stat span{font-size:.95rem;font-weight:600}
+.scholarship-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:25px}
+.scholarship-card{background:#fff;color:var(--gray-800);border-radius:15px;padding:26px;box-shadow:0 10px 30px rgba(0,0,0,.15);border:2px solid transparent;transition:all .3s ease;text-decoration:none;display:block}
+.scholarship-card:hover{transform:translateY(-8px);border-color:var(--primary-orange);box-shadow:0 20px 40px rgba(0,0,0,.22)}
+.scholarship-card-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.scholarship-value{font-size:2rem;font-weight:800;color:var(--primary-orange);line-height:1}
+.scholarship-tag{background:var(--gray-100);color:var(--primary-green);font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.scholarship-card h3{color:var(--primary-green);font-size:1.2rem;margin-bottom:10px}
+.scholarship-card p{color:var(--gray-600);font-size:.95rem;line-height:1.7;margin:0}
+.scholarship-card-more{background:var(--gray-100);border:2px dashed var(--primary-green)}
+.scholarship-more-link{display:inline-flex;align-items:center;gap:8px;margin-top:14px;color:var(--primary-orange);font-weight:700}
+@media(max-width:992px){.scholarship-intro{grid-template-columns:1fr;gap:30px}.scholarship-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:576px){.scholarship-cards{grid-template-columns:1fr}.scholarship-intro-text h2{font-size:1.8rem}.scholarship-stat strong{font-size:2rem}}
 @media(max-width:992px){.stats-counter-grid{grid-template-columns:repeat(2,1fr);gap:20px}.hero h1{white-space:normal;font-size:2.4rem}.learning-grid{grid-template-columns:1fr;gap:35px}.learning-video-container{position:static;max-width:650px;margin:0 auto}}
 @media(max-width:576px){.stats-counter-grid{grid-template-columns:1fr;gap:15px}.stat-number-wrapper{font-size:2.3rem}}
 @media(max-width:768px){.hero h1{font-size:1.85rem;white-space:normal}.hero .motto{font-size:1.25rem}.hero-content{margin:15px;padding:25px 15px;width:calc(100% - 30px)}.learning-feature-item{padding:16px 14px;gap:14px}}
@@ -304,6 +330,57 @@
         </div>
         <div style="text-align:center;margin-top:40px">
             <a href="{{ route('news') }}" class="cta-button"><i class="fa fa-newspaper me-2" style="margin-right:8px"></i>View All News &amp; Events</a>
+        </div>
+    </div>
+</section>
+
+{{-- Scholarships --}}
+<section class="section scholarships-section">
+    <div class="container">
+        <div class="scholarship-intro">
+            <div class="scholarship-intro-text">
+                <span class="scholarship-eyebrow"><i class="fa fa-hand-holding-dollar"></i> Financial Aid</span>
+                <h2>Former Presidents of Zambia Scholarship Awards</h2>
+                <p class="scholarship-lead">Financial aid opportunities for every Zambian student — from 20% to 100% tuition discounts.</p>
+                <p>{{ config('site.short_name') }} offers seven tiered scholarship awards named after Zambia's former Presidents — from 20% to 100% tuition discounts. Whether you are from a rural area, differently abled, an international student, or pursuing skills training, there is an award designed for you.</p>
+                <div class="scholarship-btns">
+                    <a href="{{ route('scholarships') }}" class="cta-button"><i class="fa fa-circle-info" style="margin-right:8px"></i>Learn More</a>
+                    <a href="{{ config('site.apply.scholarships') }}" target="_blank" rel="noopener" class="cta-button-light"><i class="fa fa-paper-plane" style="margin-right:8px"></i>Apply Now</a>
+                </div>
+            </div>
+            <div class="scholarship-stats">
+                <div class="scholarship-stat"><strong>7</strong><span>Award Types</span></div>
+                <div class="scholarship-stat"><strong>350+</strong><span>Slots / Intake</span></div>
+                <div class="scholarship-stat"><strong>100%</strong><span>Max Discount</span></div>
+                <div class="scholarship-stat"><strong>20%</strong><span>Min Discount</span></div>
+            </div>
+        </div>
+        <div class="scholarship-cards">
+            @foreach([
+                ['70%', 'Rural & Disabled', 'Kenneth D. Kaunda Award', '5 Distinctions at O’ Level. For rural and differently abled applicants.'],
+                ['50%', 'All Zambians', 'Levy P. Mwanawasa Award', 'Open to all Zambian citizens with minimum 3 Merits at O’ Level.'],
+                ['100%', 'Govt. Funded', 'Hakainde Hichilema CDF Award', 'Full scholarship for skills courses, funded by the Government of Zambia.'],
+                ['60%', 'Rural & Urban', 'Frederick T. Chiluba Award', '5 Merits at O’ Level. Rural, peri-rural, urban & differently abled.'],
+                ['40%', 'Technical Only', 'Rupiah B. Banda Award', 'For technical skills programmes only, with 5 Credits or better.'],
+            ] as [$value, $tag, $name, $desc])
+            <div class="scholarship-card">
+                <div class="scholarship-card-top">
+                    <span class="scholarship-value">{{ $value }}</span>
+                    <span class="scholarship-tag">{{ $tag }}</span>
+                </div>
+                <h3>{{ $name }}</h3>
+                <p>{{ $desc }}</p>
+            </div>
+            @endforeach
+            <a href="{{ route('scholarships') }}" class="scholarship-card scholarship-card-more">
+                <div class="scholarship-card-top">
+                    <span class="scholarship-value">+ More</span>
+                    <span class="scholarship-tag">View All</span>
+                </div>
+                <h3>Explore All 7 Awards</h3>
+                <p>See full eligibility details, application notes, and how to apply.</p>
+                <span class="scholarship-more-link">View all awards <i class="fa fa-arrow-right"></i></span>
+            </a>
         </div>
     </div>
 </section>

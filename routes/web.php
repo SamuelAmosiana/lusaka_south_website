@@ -32,6 +32,9 @@ Route::get('/about/accreditation', fn() => view('about.accreditation'))->name('a
 // Schools / Programs
 Route::get('/schools', fn() => view('schools'))->name('schools');
 
+// Scholarships
+Route::get('/scholarships', fn() => view('scholarships'))->name('scholarships');
+
 // News & Events
 Route::get('/news', [NewsController::class, 'index'])->name('news');
 Route::get('/news/{event}', [NewsController::class, 'show'])->name('news.show');

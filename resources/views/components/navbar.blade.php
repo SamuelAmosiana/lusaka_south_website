@@ -41,6 +41,7 @@
                     <li><a href="{{ config('site.apply.undergraduate') }}" class="dropdown-link"><i class="fa fa-graduation-cap fa-sm me-2"></i> Degree &amp; Diploma Programmes</a></li>
                     <li><a href="{{ config('site.apply.short_courses') }}" class="dropdown-link"><i class="fa fa-certificate fa-sm me-2"></i> Certificate Programmes</a></li>
                     <li><a href="{{ config('site.apply.corporate_training') }}" class="dropdown-link"><i class="fa fa-briefcase fa-sm me-2"></i> Corporate Training</a></li>
+                    <li><a href="{{ route('scholarships') }}" class="dropdown-link"><i class="fa fa-award fa-sm me-2"></i> Scholarships</a></li>
                 </ul>
             </li>
             <li class="nav-item">
