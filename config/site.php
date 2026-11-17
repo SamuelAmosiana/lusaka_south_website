@@ -31,7 +31,7 @@ return [
 
     // External application forms (the /apply/* pages redirect here)
     'apply' => [
-        'undergraduate'      => 'https://lsc.edu.zm/#undergraduate-application',
+        'undergraduate'      => 'https://srms.lsc.edu.zm/applications/undergraduate_application',
         'short_courses'      => 'https://srms.lsc.edu.zm/applications/short_courses_application',
         'corporate_training' => 'https://docs.google.com/forms/d/e/1FAIpQLSdoRKsQChnEPC9HYUDwcUpfpyX6_SowsDIGLPKZ699E1lT6OQ/viewform',
         'scholarships'       => 'https://srms.lsc.edu.zm/apply_scholarship',
