@@ -17,24 +17,24 @@
     <div class="form-row">
         <div class="form-group">
             <label for="name">Full Name *</label>
-            <input type="text" id="name" name="name" value="{{ old('name') }}" required placeholder="Your full name">
+            <input type="text" id="name" name="name" autocomplete="name" value="{{ old('name') }}" required placeholder="Your full name">
             @error('name')<span style="color:#d32f2f;font-size:.85rem">{{ $message }}</span>@enderror
         </div>
         <div class="form-group">
             <label for="email">Email Address *</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="your@email.com">
+            <input type="email" id="email" name="email" autocomplete="email" value="{{ old('email') }}" required placeholder="your@email.com">
             @error('email')<span style="color:#d32f2f;font-size:.85rem">{{ $message }}</span>@enderror
         </div>
     </div>
     <div class="form-row">
         <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="+260-XXX-XXX-XXX">
+            <input type="tel" id="phone" name="phone" autocomplete="tel" value="{{ old('phone') }}" placeholder="+260-XXX-XXX-XXX">
             @error('phone')<span style="color:#d32f2f;font-size:.85rem">{{ $message }}</span>@enderror
         </div>
         <div class="form-group">
             <label for="subject">Subject *</label>
-            <select id="subject" name="subject" required>
+            <select id="subject" name="subject" autocomplete="off" required>
                 <option value="">Select Subject</option>
                 @foreach(['Admissions Inquiry', 'Program Information', 'Scholarships', 'Fees & Payment', 'Student Portal Support', 'Corporate Training', 'General Inquiry'] as $subject)
                 <option value="{{ $subject }}" @selected(old('subject') === $subject)>{{ $subject }}</option>
@@ -45,7 +45,7 @@
     </div>
     <div class="form-group">
         <label for="message">Message *</label>
-        <textarea id="message" name="message" rows="5" required placeholder="How can we help you?">{{ old('message') }}</textarea>
+        <textarea id="message" name="message" autocomplete="off" rows="5" required placeholder="How can we help you?">{{ old('message') }}</textarea>
         @error('message')<span style="color:#d32f2f;font-size:.85rem">{{ $message }}</span>@enderror
     </div>
     <button type="submit" class="submit-btn"><i class="fa fa-paper-plane" style="margin-right:8px"></i>Send Message</button>
