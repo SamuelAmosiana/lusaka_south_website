@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ApplicationController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\LearningController;
+use App\Http\Controllers\Admin\AboutController as AdminAboutController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Models\Faq;
 use App\Models\Download;
@@ -24,10 +26,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // About
-Route::get('/about', fn() => view('about.overview'))->name('about');
-Route::get('/about/team', fn() => view('about.team'))->name('about.team');
-Route::get('/about/partnerships', fn() => view('about.partnerships'))->name('about.partnerships');
-Route::get('/about/accreditation', fn() => view('about.accreditation'))->name('about.accreditation');
+Route::get('/about', [AboutController::class, 'show'])->defaults('slug', 'overview')->name('about');
+Route::get('/about/team', [AboutController::class, 'show'])->defaults('slug', 'team')->name('about.team');
+Route::get('/about/partnerships', [AboutController::class, 'show'])->defaults('slug', 'partnerships')->name('about.partnerships');
+Route::get('/about/accreditation', [AboutController::class, 'show'])->defaults('slug', 'accreditation')->name('about.accreditation');
 
 // Schools / Programs
 Route::get('/schools', fn() => view('schools'))->name('schools');
@@ -98,6 +100,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('learning/features/{feature}', [LearningController::class, 'updateFeature'])->name('learning.features.update');
     Route::delete('learning/features/{feature}', [LearningController::class, 'destroyFeature'])->name('learning.features.destroy');
     Route::post('learning/features/batch', [LearningController::class, 'batchUpdateFeatures'])->name('learning.features.batch');
+
+    // About Pages (Overview, Team, Partnerships, Accreditation)
+    Route::get('about', [AdminAboutController::class, 'index'])->name('about.index');
+    Route::get('about/items/{item}/edit', [AdminAboutController::class, 'editItem'])->name('about.items.edit');
+    Route::put('about/items/{item}', [AdminAboutController::class, 'updateItem'])->name('about.items.update');
+    Route::delete('about/items/{item}', [AdminAboutController::class, 'destroyItem'])->name('about.items.destroy');
+    Route::get('about/{page}', [AdminAboutController::class, 'edit'])->name('about.edit');
+    Route::put('about/{page}', [AdminAboutController::class, 'updatePage'])->name('about.update');
+    Route::post('about/{page}/batch', [AdminAboutController::class, 'batchUpdate'])->name('about.batch');
+    Route::get('about/{page}/{group}/create', [AdminAboutController::class, 'createItem'])->name('about.items.create');
+    Route::post('about/{page}/{group}', [AdminAboutController::class, 'storeItem'])->name('about.items.store');
 
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
     Route::get('payments/export', [AdminPaymentController::class, 'export'])->name('payments.export');
