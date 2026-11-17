@@ -43,7 +43,7 @@
             [
                 'name' => 'School of Business & Management Studies',
                 'icon' => 'fa-briefcase',
-                'color' => 'linear-gradient(135deg,#228B22,#1a6b1a)',
+                'color' => 'linear-gradient(135deg,var(--primary-green),var(--dark-green))',
                 'intro' => "Develop your business acumen with programmes designed to meet the demands of Zambia's growing economy.",
                 'apply' => config('site.apply.undergraduate'),
                 'programmes' => [
@@ -57,7 +57,7 @@
             [
                 'name' => 'School of Law',
                 'icon' => 'fa-scale-balanced',
-                'color' => 'linear-gradient(135deg,#7b1fa2,#9c27b0)',
+                'color' => 'linear-gradient(135deg,var(--primary-green),var(--dark-green))',
                 'intro' => 'Build a strong foundation in legal principles and practice for a career in law and public service.',
                 'apply' => config('site.apply.undergraduate'),
                 'programmes' => [
@@ -67,7 +67,7 @@
             [
                 'name' => 'School of Engineering and Information Technology',
                 'icon' => 'fa-gears',
-                'color' => 'linear-gradient(135deg,#1565c0,#1976d2)',
+                'color' => 'linear-gradient(135deg,var(--primary-green),var(--dark-green))',
                 'intro' => "Gain the technical and digital skills demanded by Zambia's infrastructure, energy and technology sectors.",
                 'apply' => config('site.apply.undergraduate'),
                 'programmes' => [
@@ -80,7 +80,7 @@
             [
                 'name' => 'Trade and Skills Programmes',
                 'icon' => 'fa-screwdriver-wrench',
-                'color' => 'linear-gradient(135deg,#ff8c00,#ffb347)',
+                'color' => 'linear-gradient(135deg,var(--primary-green),var(--dark-green))',
                 'intro' => 'Hands-on certificate programmes that equip you with practical, employable skills for the trades and health care.',
                 'apply' => config('site.apply.short_courses'),
                 'wide' => true,
