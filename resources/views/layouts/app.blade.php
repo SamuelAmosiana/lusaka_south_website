@@ -168,6 +168,7 @@
 
 {{-- Footer --}}
 @include('components.footer')
+@include('partials.whatsapp-chat')
 
 {{-- Modals --}}
 @include('components.image-preview-modal')

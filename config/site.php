@@ -9,6 +9,9 @@ return [
     'admissions_email' => 'admissions@lsc.edu.zm',
     'phone'      => '+260-211-292-299',
     'phone2'     => '+260 770359518',
+
+    // Floating "Send us a message" button opens a WhatsApp chat with this number
+    'whatsapp'   => env('WHATSAPP_NUMBER', '+260770359518'),
     'address'    => 'Foxdale, Corner of Zambezi and Mutumbi Road, Lusaka, Zambia',
     'facebook'   => 'https://www.facebook.com/profile.php?id=61564462900141',
     'linkedin'   => 'https://www.linkedin.com/company/lsuc/posts/?feedView=all',
