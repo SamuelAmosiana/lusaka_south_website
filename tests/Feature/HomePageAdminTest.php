@@ -155,4 +155,48 @@ class HomePageAdminTest extends TestCase
             ->assertSee('href="tel:+260977000000"', false)
             ->assertSee('href="mailto:whatsapp@lsc.edu.zm"', false);
     }
+
+    public function test_site_logo_defaults_to_school_logo(): void
+    {
+        $this->get('/')->assertSee('images/school_logo.jpg');
+        $this->actingAs($this->admin())->get('/admin/about/home-hero')->assertOk()
+            ->assertSee('Site Logo')->assertSee('Using the default logo (school_logo.jpg).');
+    }
+
+    public function test_admin_can_upload_and_reset_the_site_logo(): void
+    {
+        $this->actingAs($this->admin());
+        $hero = AboutPage::where('slug', 'home-hero')->first();
+
+        $this->put('/admin/about/home-hero', [
+            'header_title' => $hero->header_title,
+            'logo_file'    => $this->png('new-logo.png'),
+        ])->assertRedirect('/admin/about/home-hero')->assertSessionHasNoErrors();
+
+        $logo = $hero->fresh()->logo;
+        $this->assertStringStartsWith('images/about/home-hero_logo_', $logo);
+        $this->assertFileExists(public_path($logo));
+
+        // Shown in the navbar, the WhatsApp card and the admin sidebar
+        $this->get('/')->assertSee($logo)->assertDontSee('images/school_logo.jpg');
+        $this->get('/admin/home')->assertSee($logo);
+
+        // Saving the text again without a new file keeps the logo
+        $this->put('/admin/about/home-hero', ['header_title' => 'Welcome']);
+        $this->assertSame($logo, $hero->fresh()->logo);
+
+        // Going back to the default removes the uploaded file
+        $this->put('/admin/about/home-hero', ['header_title' => 'Welcome', 'reset_logo' => 1]);
+        $this->assertNull($hero->fresh()->logo);
+        $this->assertFileDoesNotExist(public_path($logo));
+        $this->get('/')->assertSee('images/school_logo.jpg');
+    }
+
+    public function test_site_logo_must_be_an_image(): void
+    {
+        $this->actingAs($this->admin())->put('/admin/about/home-hero', [
+            'header_title' => 'LSUC',
+            'logo_file'    => UploadedFile::fake()->create('logo.pdf', 10, 'application/pdf'),
+        ])->assertSessionHasErrors('logo_file');
+    }
 }

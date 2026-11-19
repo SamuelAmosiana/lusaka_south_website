@@ -55,13 +55,32 @@ tr.inactive td{opacity:.55}
         @foreach($fields as $field => $spec)
             @if(!empty($spec['image']))
             </div>
-            <div class="form-group">
-                <label for="image_file">{{ $spec['label'] }} <span style="font-weight:400;color:var(--gray-600)">(JPG, PNG or WebP, max 5MB)</span></label>
+            @php
+                $isLogo = $field === 'logo';
+                $current = $page->fileUrl($field);
+                $shown = $current ?? (!empty($spec['default']) ? asset($spec['default']) : null);
+            @endphp
+            <div class="form-group" style="{{ $isLogo ? 'border-top:2px solid var(--gray-200);padding-top:18px;margin-top:6px' : '' }}">
+                <label for="{{ $field }}_file">{{ $spec['label'] }} <span style="font-weight:400;color:var(--gray-600)">(JPG, PNG or WebP, max 5MB)</span></label>
                 <div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap">
-                    @if($page->image_url)<img src="{{ $page->image_url }}" alt="" style="width:200px;height:100px;object-fit:cover;border-radius:10px;border:2px solid var(--gray-200)">@endif
+                    @if($isLogo)
+                    <div style="width:84px;height:84px;border-radius:50%;background:#fff;border:2px solid var(--primary-orange);padding:5px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);flex-shrink:0">
+                        <img id="{{ $field }}-preview" src="{{ $shown }}" alt="Current logo" style="width:100%;height:100%;object-fit:contain">
+                    </div>
+                    @elseif($shown)
+                    <img id="{{ $field }}-preview" src="{{ $shown }}" alt="" style="width:200px;height:100px;object-fit:cover;border-radius:10px;border:2px solid var(--gray-200)">
+                    @endif
                     <div style="flex:1;min-width:220px">
-                        <input type="file" name="image_file" id="image_file" class="form-control" accept="image/jpeg,image/png,image/webp">
-                        <small style="color:var(--gray-600)">Choose a new file only if you want to replace the current picture. A wide landscape photo works best.</small>
+                        <input type="file" name="{{ $field }}_file" id="{{ $field }}_file" class="form-control" accept="image/jpeg,image/png,image/webp" onchange="previewPicture(this, @js($field . '-preview'))">
+                        <small style="color:var(--gray-600);display:block;margin-top:4px">{{ $spec['help'] ?? '' }} Choose a new file only if you want to replace the current one.</small>
+                        @if($isLogo)
+                        <small style="color:var(--gray-600);display:block;margin-top:4px">{{ $current ? 'Using your uploaded logo.' : 'Using the default logo (' . basename($spec['default']) . ').' }}</small>
+                        @endif
+                        @if($current && str_starts_with($page->$field, 'images/about/'))
+                        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:400;font-size:.85rem;cursor:pointer">
+                            <input type="checkbox" name="reset_{{ $field }}" value="1" style="accent-color:#dc3545"> {{ $isLogo ? 'Go back to the default logo' : 'Go back to the original picture' }}
+                        </label>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -180,4 +199,13 @@ tr.inactive td{opacity:.55}
     @method('DELETE')
 </form>
 @endforeach
+
+<script>
+// Show a chosen picture straight away, before saving
+function previewPicture(input, previewId) {
+    const preview = document.getElementById(previewId);
+    if (!preview || !input.files || !input.files[0]) return;
+    preview.src = URL.createObjectURL(input.files[0]);
+}
+</script>
 @endsection

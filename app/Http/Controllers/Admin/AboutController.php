@@ -30,7 +30,8 @@ class AboutController extends Controller
         $rules = [];
         foreach ($page->fields() as $field => $spec) {
             if (! empty($spec['image'])) {
-                $rules['image_file'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120';
+                $rules[$field . '_file'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120';
+                $rules['reset_' . $field] = 'nullable|boolean';
                 continue;
             }
             $max = in_array($field, ['section_subtitle', 'extra_text']) || ! empty($spec['textarea']) ? 3000 : 255;
@@ -43,16 +44,28 @@ class AboutController extends Controller
             }
         }
 
-        $data = $request->validate($rules);
+        $data = $request->validate($rules, [
+            '*_file.image' => 'Please choose a picture (JPG, PNG or WebP).',
+            '*_file.max'   => 'Pictures must be 5MB or smaller.',
+        ]);
 
-        if ($request->hasFile('image_file')) {
-            $file = $request->file('image_file');
-            $name = $page->slug . '_' . time() . '.' . strtolower($file->getClientOriginalExtension());
-            $file->move(public_path('images/about'), $name);
-            $this->deleteUploadedImage($page->image);
-            $data['image'] = 'images/about/' . $name;
+        // Picture fields (e.g. hero background, site logo): upload a new one or go back to the default
+        foreach ($page->fields() as $field => $spec) {
+            if (empty($spec['image'])) {
+                continue;
+            }
+            if ($request->hasFile($field . '_file')) {
+                $file = $request->file($field . '_file');
+                $name = $page->slug . '_' . $field . '_' . time() . '.' . strtolower($file->getClientOriginalExtension());
+                $file->move(public_path('images/about'), $name);
+                $this->deleteUploadedImage($page->$field);
+                $data[$field] = 'images/about/' . $name;
+            } elseif ($request->boolean('reset_' . $field)) {
+                $this->deleteUploadedImage($page->$field);
+                $data[$field] = null;
+            }
+            unset($data[$field . '_file'], $data['reset_' . $field]);
         }
-        unset($data['image_file']);
 
         $page->update($data);
 

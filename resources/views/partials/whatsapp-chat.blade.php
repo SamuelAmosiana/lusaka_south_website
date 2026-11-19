@@ -40,7 +40,7 @@
 <div class="wa-widget" id="wa-widget">
     <div class="wa-card" id="wa-card" role="dialog" aria-modal="false" aria-labelledby="wa-card-title" aria-hidden="true">
         <div class="wa-card-header">
-            <img src="{{ asset('images/school_logo.jpg') }}" alt="">
+            <img src="{{ \App\Models\AboutPage::siteLogoUrl() }}" alt="">
             <div>
                 <strong id="wa-card-title">{{ config('site.short_name') }} Admissions &amp; Enquiries</strong>
                 <span>Typically replies within office hours</span>

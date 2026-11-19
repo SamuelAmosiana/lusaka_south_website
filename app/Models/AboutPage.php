@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class AboutPage extends Model
 {
@@ -15,7 +16,11 @@ class AboutPage extends Model
         'extra_title',
         'extra_text',
         'image',
+        'logo',
     ];
+
+    /** Logo shown when none has been uploaded in Admin > Home Page > Hero Banner. */
+    public const DEFAULT_LOGO = 'images/school_logo.jpg';
 
     /** Text fields shown on a page's edit form unless the page lists its own 'fields'. */
     public const DEFAULT_FIELDS = [
@@ -98,14 +103,15 @@ class AboutPage extends Model
         'home-hero' => [
             'area'        => 'home',
             'label'       => 'Hero Banner',
-            'description' => 'The large banner at the top: heading, motto, intro text and background picture.',
+            'description' => 'The large banner at the top (heading, motto, intro text, background picture) and the site logo.',
             'route'       => 'home',
             'icon'        => 'fa-panorama',
             'fields'      => [
                 'header_title'     => ['label' => 'Main Heading', 'required' => true],
                 'header_subtitle'  => ['label' => 'Motto'],
                 'section_subtitle' => ['label' => 'Intro Text', 'textarea' => true],
-                'image'            => ['label' => 'Background Picture', 'image' => true],
+                'image'            => ['label' => 'Background Picture', 'image' => true, 'help' => 'A wide landscape photo works best.'],
+                'logo'             => ['label' => 'Site Logo', 'image' => true, 'help' => 'Shown in the website navbar, the admin panel and the WhatsApp chat card. A square picture on a white or transparent background works best.', 'default' => self::DEFAULT_LOGO],
             ],
             'groups'      => [],
             'extra'       => null,
@@ -231,6 +237,31 @@ class AboutPage extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image && file_exists(public_path($this->image)) ? asset($this->image) : null;
+        return $this->fileUrl('image');
+    }
+
+    /** Public URL of an uploaded picture field (image, logo), or null when missing. */
+    public function fileUrl(string $field): ?string
+    {
+        return $this->$field && file_exists(public_path($this->$field)) ? asset($this->$field) : null;
+    }
+
+    /** The site logo used across the website and admin panel. */
+    public static function siteLogoUrl(): string
+    {
+        $path = Cache::rememberForever('site.logo', function () {
+            try {
+                return static::where('slug', 'home-hero')->value('logo');
+            } catch (\Throwable) {
+                return null; // e.g. before the database update has been run
+            }
+        });
+
+        return asset($path && file_exists(public_path($path)) ? $path : self::DEFAULT_LOGO);
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget('site.logo'));
     }
 }
