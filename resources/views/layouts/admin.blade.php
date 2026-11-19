@@ -58,6 +58,15 @@
         .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
         @media(max-width:900px){.sidebar{transform:translateX(-100%)}.main-content{margin-left:0}.form-row{grid-template-columns:1fr}}
         @media print{.sidebar,.topbar{display:none}.main-content{margin-left:0}}
+        .logout-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000;padding:16px;animation:logout-fade .15s ease}
+        .logout-modal[hidden]{display:none}
+        .logout-modal-box{background:#fff;border-radius:14px;padding:28px 26px 24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+        .logout-modal-icon{width:58px;height:58px;border-radius:50%;background:#fce4ec;color:#dc3545;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 14px}
+        .logout-modal-box h3{color:var(--gray-800);font-size:1.25rem;margin-bottom:8px}
+        .logout-modal-box p{color:var(--gray-600);font-size:.92rem;line-height:1.6;margin-bottom:22px}
+        .logout-modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+        .logout-modal-actions .btn{min-width:130px;justify-content:center}
+        @keyframes logout-fade{from{opacity:0}to{opacity:1}}
     </style>
     @yield('styles')
 </head>
@@ -65,7 +74,7 @@
 <div class="admin-wrapper">
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <img src="{{ asset('images/school_logo.jpg') }}" alt="LSUC Logo">
+            <img src="{{ \App\Models\AboutPage::siteLogoUrl() }}" alt="LSUC Logo">
             <div><h3>LSUC Admin</h3><p>Management Panel</p></div>
         </div>
         <nav class="sidebar-nav">
@@ -97,7 +106,7 @@
                 @if($pendingPayments)<span class="badge badge-orange" style="margin-left:auto">{{ $pendingPayments }}</span>@endif
             </a>
             <div class="sidebar-section">Account</div>
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" id="logout-form">
                 @csrf
                 <button type="submit" class="sidebar-link" style="width:100%;background:none;border:none;cursor:pointer;text-align:left"><i class="fa fa-right-from-bracket"></i> Logout</button>
             </form>
@@ -117,6 +126,61 @@
         </div>
     </div>
 </div>
+{{-- Logout confirmation --}}
+<div class="logout-modal" id="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-modal-title" aria-describedby="logout-modal-text" hidden>
+    <div class="logout-modal-box">
+        <div class="logout-modal-icon"><i class="fa fa-right-from-bracket"></i></div>
+        <h3 id="logout-modal-title">Log out?</h3>
+        <p id="logout-modal-text">Are you sure you want to log out of the admin panel? Any changes you haven't saved will be lost.</p>
+        <div class="logout-modal-actions">
+            <button type="button" class="btn btn-outline" id="logout-cancel">Cancel</button>
+            <button type="button" class="btn btn-danger" id="logout-confirm"><i class="fa fa-right-from-bracket"></i> Yes, log out</button>
+        </div>
+    </div>
+</div>
+<script>
+(() => {
+    const form = document.getElementById('logout-form');
+    const modal = document.getElementById('logout-modal');
+    const cancel = document.getElementById('logout-cancel');
+    const confirmBtn = document.getElementById('logout-confirm');
+    if (!form || !modal) return;
+    let opener = null;
+
+    function close() {
+        modal.hidden = true;
+        document.removeEventListener('keydown', onKey);
+        if (opener) opener.focus();
+    }
+    function onKey(e) {
+        if (e.key === 'Escape') close();
+        // Keep keyboard focus inside the box while it's open
+        if (e.key === 'Tab') {
+            const first = cancel, last = confirmBtn;
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+    }
+
+    // Ask first; only "Yes, log out" actually submits the logout form
+    form.addEventListener('submit', e => {
+        if (form.dataset.confirmed === '1') return;
+        e.preventDefault();
+        opener = document.activeElement;
+        modal.hidden = false;
+        document.addEventListener('keydown', onKey);
+        cancel.focus();
+    });
+    cancel.addEventListener('click', close);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    confirmBtn.addEventListener('click', () => {
+        form.dataset.confirmed = '1';
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Logging out…';
+        form.submit();
+    });
+})();
+</script>
 @yield('scripts')
 </body>
 </html>
