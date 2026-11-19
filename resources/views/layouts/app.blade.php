@@ -14,8 +14,8 @@
         .navbar{background:linear-gradient(135deg,var(--primary-green) 0%,var(--dark-green) 100%);padding:0;box-shadow:0 2px 10px rgba(0,0,0,.1);position:fixed;width:100%;top:0;z-index:1000}
         .nav-container{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
         .logo-section{display:flex;align-items:center;padding:10px 0}
-        .logo{width:50px;height:50px;margin-right:15px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;border:2px solid var(--primary-orange)}
-        .logo img{width:100%;height:100%;object-fit:cover}
+        .logo{width:54px;height:54px;margin-right:15px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;border:2px solid var(--primary-orange);background:#fff;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,.2);flex-shrink:0}
+        .logo img{width:100%;height:100%;object-fit:contain}
         .logo-text{color:#fff}.logo-text h2{font-size:22px;font-weight:700}.logo-text p{font-size:12px;color:var(--light-orange)}
         .nav-menu{list-style:none;display:flex;margin-left:auto}
         .nav-item{position:relative}

@@ -3,7 +3,7 @@
         <div class="logo-section">
             <div class="logo">
                 <a href="{{ route('home') }}">
-                    <img src="{{ asset('images/lsuc_logo.jpeg') }}" alt="{{ config('site.short_name') }} Logo">
+                    <img src="{{ asset('images/school_logo.jpg') }}" alt="{{ config('site.short_name') }} Logo">
                 </a>
             </div>
             <div class="logo-text">

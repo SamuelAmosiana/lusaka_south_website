@@ -13,7 +13,7 @@
 .wa-card{position:absolute;right:0;bottom:76px;width:340px;max-width:calc(100vw - 32px);background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:bottom right;transition:all .22s ease}
 .wa-widget.open .wa-card{opacity:1;visibility:visible;transform:none}
 .wa-card-header{background:#075E54;color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px}
-.wa-card-header img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#fff;border:2px solid #fff}
+.wa-card-header img{width:44px;height:44px;border-radius:50%;object-fit:contain;background:#fff;border:2px solid #fff;padding:3px}
 .wa-card-header strong{display:block;font-size:1rem}
 .wa-card-header span{font-size:.8rem;opacity:.85}
 .wa-close{margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem}
@@ -40,7 +40,7 @@
 <div class="wa-widget" id="wa-widget">
     <div class="wa-card" id="wa-card" role="dialog" aria-modal="false" aria-labelledby="wa-card-title" aria-hidden="true">
         <div class="wa-card-header">
-            <img src="{{ asset('images/lsuc_logo.jpeg') }}" alt="">
+            <img src="{{ asset('images/school_logo.jpg') }}" alt="">
             <div>
                 <strong id="wa-card-title">{{ config('site.short_name') }} Admissions &amp; Enquiries</strong>
                 <span>Typically replies within office hours</span>

@@ -12,7 +12,7 @@
         .admin-wrapper{display:flex;min-height:100vh}
         .sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,var(--dark-green),var(--primary-green));color:#fff;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s ease}
         .sidebar-brand{padding:25px 20px;border-bottom:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:12px}
-        .sidebar-brand img{width:45px;height:45px;border-radius:50%;border:2px solid var(--primary-orange);object-fit:cover}
+        .sidebar-brand img{width:48px;height:48px;border-radius:50%;border:2px solid var(--primary-orange);object-fit:contain;background:#fff;padding:3px;flex-shrink:0}
         .sidebar-brand div h3{font-size:1rem;font-weight:700}
         .sidebar-brand div p{font-size:.75rem;opacity:.75}
         .sidebar-nav{padding:15px 0}
@@ -65,7 +65,7 @@
 <div class="admin-wrapper">
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <img src="{{ asset('images/lsuc_logo.jpeg') }}" alt="LSUC Logo">
+            <img src="{{ asset('images/school_logo.jpg') }}" alt="LSUC Logo">
             <div><h3>LSUC Admin</h3><p>Management Panel</p></div>
         </div>
         <nav class="sidebar-nav">
