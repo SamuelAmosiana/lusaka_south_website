@@ -5,7 +5,7 @@
 
 @section('styles')
 <style>
-.hero{background:url('{{ asset('images/lsuc site cover img.jpeg') }}') center/cover no-repeat;height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;margin-top:80px;position:relative}
+.hero{background:url('{{ $hero?->image_url ?? asset('images/lsuc site cover img.jpeg') }}') center/cover no-repeat;height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;margin-top:80px;position:relative}
 .hero::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.45)}
 .hero-content{position:relative;z-index:1;max-width:1200px;width:94%;padding:45px 30px;background:rgba(0,0,0,.45);backdrop-filter:blur(5px);border-radius:20px;border:1px solid rgba(255,255,255,.3);box-shadow:0 8px 32px rgba(0,0,0,.2)}
 .hero h1{font-size:clamp(1.8rem,3.6vw,3.2rem);margin-bottom:20px;font-weight:700;text-shadow:2px 2px 4px rgba(0,0,0,.3);letter-spacing:-.5px;white-space:nowrap}
@@ -110,9 +110,9 @@
 {{-- Hero --}}
 <section class="hero" id="home-hero">
     <div class="hero-content">
-        <h1>{{ config('site.name') }}</h1>
-        <div class="motto">{{ config('site.tagline') }}</div>
-        <p>Empowering minds, shaping futures, and building tomorrow's leaders through excellence in education and innovative learning experiences.</p>
+        <h1>{{ $hero?->header_title ?: config('site.name') }}</h1>
+        @if($hero?->header_subtitle)<div class="motto">{{ $hero->header_subtitle }}</div>@endif
+        @if($hero?->section_subtitle)<p>{{ $hero->section_subtitle }}</p>@endif
         <div class="hero-btns">
             <a href="{{ config('site.apply.undergraduate') }}" class="cta-button"><i class="fa fa-graduation-cap"></i> Apply Now</a>
             <a href="{{ route('schools') }}" class="cta-button-outline" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.6)"><i class="fa fa-book-open"></i> Explore Programs</a>
@@ -169,48 +169,30 @@
 </section>
 
 {{-- Core Values --}}
+@php $values = $home->get('home-values'); @endphp
+@if($values && $values->activeItems('values')->isNotEmpty())
 <section class="section core-values">
     <div class="container">
         <div class="section-title">
-            <h2>Our Core Values</h2>
-            <p>The principles that guide our commitment to educational excellence and student success</p>
+            <h2>{{ $values->section_title }}</h2>
+            @if($values->section_subtitle)<p>{{ $values->section_subtitle }}</p>@endif
         </div>
         <div class="cards-grid">
-            <!-- Excellence -->
+            @foreach($values->activeItems('values') as $value)
             <div class="card value-card">
-                <div class="value-card-bg" style="background-image: url('{{ asset('images/excellence.jpg') }}');"></div>
+                @if($value->image_url)<div class="value-card-bg" style="background-image: url('{{ $value->image_url }}');"></div>@endif
                 <div class="value-card-overlay"></div>
                 <div class="value-card-content">
-                    <div class="card-icon"><i class="fa fa-bullseye"></i></div>
-                    <h3>Excellence</h3>
-                    <p>We are committed to maintaining the highest standards in education, research, and student services. Our programs are designed to challenge and inspire.</p>
+                    <div class="card-icon"><i class="fa {{ $value->icon }}"></i></div>
+                    <h3>{{ $value->title }}</h3>
+                    <p>{{ $value->body }}</p>
                 </div>
             </div>
-
-            <!-- Integrity -->
-            <div class="card value-card">
-                <div class="value-card-bg" style="background-image: url('{{ asset('images/integrity.jpg') }}');"></div>
-                <div class="value-card-overlay"></div>
-                <div class="value-card-content">
-                    <div class="card-icon"><i class="fa fa-handshake"></i></div>
-                    <h3>Integrity</h3>
-                    <p>We uphold honesty, transparency, and ethical conduct in all our dealings. We foster a culture of trust and accountability across our institution.</p>
-                </div>
-            </div>
-
-            <!-- Innovation -->
-            <div class="card value-card">
-                <div class="value-card-bg" style="background-image: url('{{ asset('images/innovation.jpg') }}');"></div>
-                <div class="value-card-overlay"></div>
-                <div class="value-card-content">
-                    <div class="card-icon"><i class="fa fa-lightbulb"></i></div>
-                    <h3>Innovation</h3>
-                    <p>We embrace new ideas and technologies to enhance learning experiences. Our curriculum stays current with industry trends and global developments.</p>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
+@endif
 
 @if(!isset($learningSettings) || $learningSettings->is_active)
 {{-- Online and On-Campus Learning --}}
@@ -352,41 +334,38 @@
 </section>
 
 {{-- Scholarships --}}
+@php $sch = $home->get('home-scholarships'); @endphp
+@if($sch)
 <section class="section scholarships-section">
     <div class="container">
         <div class="scholarship-intro">
             <div class="scholarship-intro-text">
-                <span class="scholarship-eyebrow"><i class="fa fa-hand-holding-dollar"></i> Financial Aid</span>
-                <h2>Former Presidents of Zambia Scholarship Awards</h2>
-                <p class="scholarship-lead">Financial aid opportunities for every Zambian student — from 20% to 100% tuition discounts.</p>
-                <p>{{ config('site.short_name') }} offers seven tiered scholarship awards named after Zambia's former Presidents — from 20% to 100% tuition discounts. Whether you are from a rural area, differently abled, an international student, or pursuing skills training, there is an award designed for you.</p>
+                @if($sch->header_subtitle)<span class="scholarship-eyebrow"><i class="fa fa-hand-holding-dollar"></i> {{ $sch->header_subtitle }}</span>@endif
+                <h2>{{ $sch->section_title }}</h2>
+                @if($sch->section_subtitle)<p class="scholarship-lead">{{ $sch->section_subtitle }}</p>@endif
+                @if($sch->extra_text)<p>{{ $sch->extra_text }}</p>@endif
                 <div class="scholarship-btns">
                     <a href="{{ route('scholarships') }}" class="cta-button"><i class="fa fa-circle-info" style="margin-right:8px"></i>Learn More</a>
                     <a href="{{ config('site.apply.scholarships') }}" target="_blank" rel="noopener" class="cta-button-light"><i class="fa fa-paper-plane" style="margin-right:8px"></i>Apply Now</a>
                 </div>
             </div>
+            @if($sch->activeItems('stats')->isNotEmpty())
             <div class="scholarship-stats">
-                <div class="scholarship-stat"><strong>7</strong><span>Award Types</span></div>
-                <div class="scholarship-stat"><strong>350+</strong><span>Slots / Intake</span></div>
-                <div class="scholarship-stat"><strong>100%</strong><span>Max Discount</span></div>
-                <div class="scholarship-stat"><strong>20%</strong><span>Min Discount</span></div>
+                @foreach($sch->activeItems('stats') as $stat)
+                <div class="scholarship-stat"><strong>{{ $stat->title }}</strong><span>{{ $stat->subtitle }}</span></div>
+                @endforeach
             </div>
+            @endif
         </div>
         <div class="scholarship-cards">
-            @foreach([
-                ['70%', 'Rural & Disabled', 'Kenneth D. Kaunda Award', '5 Distinctions at O’ Level. For rural and differently abled applicants.'],
-                ['50%', 'All Zambians', 'Levy P. Mwanawasa Award', 'Open to all Zambian citizens with minimum 3 Merits at O’ Level.'],
-                ['100%', 'Govt. Funded', 'Hakainde Hichilema CDF Award', 'Full scholarship for skills courses, funded by the Government of Zambia.'],
-                ['60%', 'Rural & Urban', 'Frederick T. Chiluba Award', '5 Merits at O’ Level. Rural, peri-rural, urban & differently abled.'],
-                ['40%', 'Technical Only', 'Rupiah B. Banda Award', 'For technical skills programmes only, with 5 Credits or better.'],
-            ] as [$value, $tag, $name, $desc])
+            @foreach($sch->activeItems('awards') as $award)
             <div class="scholarship-card">
                 <div class="scholarship-card-top">
-                    <span class="scholarship-value">{{ $value }}</span>
-                    <span class="scholarship-tag">{{ $tag }}</span>
+                    <span class="scholarship-value">{{ $award->value }}</span>
+                    @if($award->subtitle)<span class="scholarship-tag">{{ $award->subtitle }}</span>@endif
                 </div>
-                <h3>{{ $name }}</h3>
-                <p>{{ $desc }}</p>
+                <h3>{{ $award->title }}</h3>
+                <p>{{ $award->body }}</p>
             </div>
             @endforeach
             <a href="{{ route('scholarships') }}" class="scholarship-card scholarship-card-more">
@@ -394,80 +373,57 @@
                     <span class="scholarship-value">+ More</span>
                     <span class="scholarship-tag">View All</span>
                 </div>
-                <h3>Explore All 7 Awards</h3>
+                <h3>{{ $sch->extra_title ?: 'Explore All Awards' }}</h3>
                 <p>See full eligibility details, application notes, and how to apply.</p>
                 <span class="scholarship-more-link">View all awards <i class="fa fa-arrow-right"></i></span>
             </a>
         </div>
     </div>
 </section>
+@endif
 
 {{-- Campus Carousel --}}
+@php $campus = $home->get('home-campus'); $slides = $campus ? $campus->activeItems('slides')->filter(fn($slide) => $slide->image_url)->values() : collect(); @endphp
+@if($slides->isNotEmpty())
 <section class="section campus-section">
     <div class="container">
         <div class="section-title">
-            <h2>Our Campus</h2>
-            <p>Experience world-class facilities designed to support your academic journey.</p>
+            <h2>{{ $campus->section_title }}</h2>
+            @if($campus->section_subtitle)<p>{{ $campus->section_subtitle }}</p>@endif
         </div>
         <div class="campus-carousel" id="campusCarousel">
-            <div class="carousel-image active" style="background-image:url('{{ asset('images/school3.jpeg') }}')">
+            @foreach($slides as $slide)
+            <div class="carousel-image {{ $loop->first ? 'active' : '' }}" style="background-image:url('{{ $slide->image_url }}')">
                 <div class="carousel-overlay">
-                    <div class="carousel-title">State-of-the-Art Facilities</div>
-                    <div class="carousel-description">Modern classrooms and labs equipped for 21st century learning</div>
+                    <div class="carousel-title">{{ $slide->title }}</div>
+                    @if($slide->body)<div class="carousel-description">{{ $slide->body }}</div>@endif
                 </div>
             </div>
-            <div class="carousel-image" style="background-image:url('{{ asset('images/school1.jpeg') }}')">
-                <div class="carousel-overlay">
-                    <div class="carousel-title">Vibrant Campus Life</div>
-                    <div class="carousel-description">A thriving community of students, faculty, and staff</div>
-                </div>
-            </div>
-            <div class="carousel-image" style="background-image:url('{{ asset('images/school4.jpeg') }}')">
-                <div class="carousel-overlay">
-                    <div class="carousel-title">Inspiring Learning Environment</div>
-                    <div class="carousel-description">Spaces designed to foster creativity and academic excellence</div>
-                </div>
-            </div>
-            <div class="carousel-image" style="background-image:url('{{ asset('images/school2.jpeg') }}')">
-                <div class="carousel-overlay">
-                    <div class="carousel-title">Industry-Ready Programs</div>
-                    <div class="carousel-description">Curricula aligned with real-world industry needs</div>
-                </div>
-            </div>
+            @endforeach
+            @if($slides->count() > 1)
             <div class="carousel-indicators">
-                <div class="indicator active"></div>
-                <div class="indicator"></div>
-                <div class="indicator"></div>
-                <div class="indicator"></div>
+                @foreach($slides as $slide)<div class="indicator {{ $loop->first ? 'active' : '' }}"></div>@endforeach
             </div>
+            @endif
         </div>
     </div>
 </section>
+@endif
 
 {{-- Gallery Preview --}}
+@php $environment = $home->get('home-environment'); $envPhotos = $environment ? $environment->activeItems('photos')->filter(fn($photo) => $photo->image_url)->values() : collect(); @endphp
+@if($envPhotos->isNotEmpty())
 <section class="section gallery-section">
     <div class="container">
         <div class="section-title">
-            <h2>School Environment</h2>
-            <p>Take a visual tour of our modern campus facilities and vibrant student life.</p>
+            <h2>{{ $environment->section_title }}</h2>
+            @if($environment->section_subtitle)<p>{{ $environment->section_subtitle }}</p>@endif
         </div>
         <div class="gallery-grid">
-            @php
-            $galleryItems = [
-                ['img'=>'computer_lab.jpg','label'=>'Computer Laboratory'],
-                ['img'=>'scienc_lab.jpg','label'=>'Science Laboratory'],
-                ['img'=>'library.jpg','label'=>'Library'],
-                ['img'=>'auditorium.jpg','label'=>'Auditorium'],
-                ['img'=>'sports_complex.jpg','label'=>'Sports Complex'],
-                ['img'=>'cafteria.jpg','label'=>'Cafeteria'],
-                ['img'=>'campus_grounds.jpg','label'=>'Campus Grounds'],
-                ['img'=>'culture.jpg','label'=>'Cultural Events'],
-            ];
-            @endphp
-            @foreach($galleryItems as $item)
-            <div class="gallery-item" onclick="openImagePreview(this)" data-image="{{ asset('images/'.$item['img']) }}">
-                <img src="{{ asset('images/'.$item['img']) }}" alt="{{ $item['label'] }}" loading="lazy">
-                <div class="gallery-overlay"><h4>{{ $item['label'] }}</h4></div>
+            @foreach($envPhotos as $photo)
+            <div class="gallery-item" onclick="openImagePreview(this)" data-image="{{ $photo->image_url }}">
+                <img src="{{ $photo->image_url }}" alt="{{ $photo->title }}" loading="lazy">
+                @if($photo->title)<div class="gallery-overlay"><h4>{{ $photo->title }}</h4></div>@endif
             </div>
             @endforeach
         </div>
@@ -476,45 +432,37 @@
         </div>
     </div>
 </section>
+@endif
 
 {{-- Get in Touch --}}
+@php $touch = $home->get('home-contact'); @endphp
 <section class="section contact-home-section" id="contact-form">
     <div class="container">
         <div class="section-title">
-            <h2>Get in Touch</h2>
-            <p>Have a question about admissions, programmes or scholarships? Reach out and our team will get back to you.</p>
+            <h2>{{ $touch?->section_title ?: 'Get in Touch' }}</h2>
+            @if($touch?->section_subtitle)<p>{{ $touch->section_subtitle }}</p>@endif
         </div>
         <div class="contact-home-grid">
             <div class="contact-home-card contact-info-card">
-                <h3><i class="fa fa-building-columns"></i> Main Office</h3>
+                <h3><i class="fa fa-building-columns"></i> {{ $touch?->extra_title ?: 'Main Office' }}</h3>
+                @foreach($touch ? $touch->activeItems('details') : [] as $detail)
                 <div class="contact-info-item">
-                    <i class="fa fa-location-dot"></i>
-                    <div><strong>Address</strong><span>{!! collect(config('site.contact.address'))->map(fn($l) => e($l))->implode('<br>') !!}</span></div>
-                </div>
-                <div class="contact-info-item">
-                    <i class="fa fa-phone"></i>
-                    <div><strong>Phone</strong><a href="tel:{{ preg_replace('/[^+\d]/', '', config('site.contact.phone')) }}">{{ config('site.contact.phone') }}</a></div>
-                </div>
-                <div class="contact-info-item">
-                    <i class="fa fa-envelope"></i>
-                    <div><strong>Email</strong><a href="mailto:{{ config('site.contact.email') }}">{{ config('site.contact.email') }}</a></div>
-                </div>
-                <div class="contact-info-item">
-                    <i class="fa fa-user-graduate"></i>
-                    <div><strong>To talk to Enrolments, Call</strong>
-                        @foreach(config('site.contact.enrolments') as $number)
-                        <a href="tel:{{ preg_replace('/[^+\d]/', '', $number) }}">{{ $number }}</a>
+                    <i class="fa {{ $detail->icon }}"></i>
+                    <div><strong>{{ $detail->title }}</strong>
+                        @foreach(preg_split('/\R/', trim($detail->body)) as $line)
+                            @php $line = trim($line); @endphp
+                            @continue($line === '')
+                            @if(filter_var($line, FILTER_VALIDATE_EMAIL))
+                                <a href="mailto:{{ $line }}">{{ $line }}</a>
+                            @elseif(preg_match('/^\+?[\d\s()\-]{7,}$/', $line))
+                                <a href="tel:{{ preg_replace('/[^+\d]/', '', $line) }}">{{ $line }}</a>
+                            @else
+                                <span>{{ $line }}</span>
+                            @endif
                         @endforeach
                     </div>
                 </div>
-                <div class="contact-info-item">
-                    <i class="fa fa-clock"></i>
-                    <div><strong>Office Hours</strong>
-                        @foreach(config('site.contact.office_hours') as $hours)
-                        <span>{{ $hours }}</span>
-                        @endforeach
-                    </div>
-                </div>
+                @endforeach
             </div>
             <div class="contact-home-card">
                 <h3><i class="fa fa-paper-plane"></i> Send Us a Message</h3>
@@ -535,9 +483,9 @@ function showSlide(i){
     slides.forEach(s=>s.classList.remove('active'));
     indicators.forEach(d=>d.classList.remove('active'));
     slides[i].classList.add('active');
-    indicators[i].classList.add('active');
+    if(indicators[i])indicators[i].classList.add('active');
 }
-function nextSlide(){currentSlide=(currentSlide+1)%slides.length;showSlide(currentSlide);}
+function nextSlide(){if(slides.length<2)return;currentSlide=(currentSlide+1)%slides.length;showSlide(currentSlide);}
 let carouselInterval=setInterval(nextSlide,3000);
 indicators.forEach((d,i)=>d.addEventListener('click',()=>{
     currentSlide=i;showSlide(i);

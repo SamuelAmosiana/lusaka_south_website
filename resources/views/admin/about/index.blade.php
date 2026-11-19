@@ -21,7 +21,7 @@
     </div>
     <p style="color:var(--gray-600);margin-bottom:25px">Choose a page to edit its headings, cards and people. Changes show on the website straight away.</p>
     <div class="about-pages-grid">
-        @foreach(array_filter(\App\Models\AboutPage::PAGES, fn($c) => $c['about']) as $slug => $config)
+        @foreach(array_filter(\App\Models\AboutPage::PAGES, fn($c) => $c['area'] === 'about') as $slug => $config)
             @php $page = $pages->get($slug); @endphp
             <div class="about-page-card">
                 <div class="page-icon"><i class="fa {{ $config['icon'] }}"></i></div>

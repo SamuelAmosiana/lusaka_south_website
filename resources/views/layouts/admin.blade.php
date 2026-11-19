@@ -77,14 +77,16 @@
             <a href="{{ route('admin.events.create') }}" class="sidebar-link" style="padding-left:36px;font-size:.85rem"><i class="fa fa-plus fa-sm"></i> Add News</a>
             <a href="{{ route('admin.faqs.index') }}" class="sidebar-link {{ request()->routeIs('admin.faqs*')?'active':'' }}"><i class="fa fa-circle-question"></i> FAQs</a>
             <a href="{{ route('admin.downloads.index') }}" class="sidebar-link {{ request()->routeIs('admin.downloads*')?'active':'' }}"><i class="fa fa-download"></i> Downloads</a>
-            <a href="{{ route('admin.counters.index') }}" class="sidebar-link {{ request()->routeIs('admin.counters*')?'active':'' }}"><i class="fa fa-chart-simple"></i> Home Counters</a>
-            <a href="{{ route('admin.learning.index') }}" class="sidebar-link {{ request()->routeIs('admin.learning*')?'active':'' }}"><i class="fa fa-graduation-cap"></i> Online &amp; Campus</a>
             @php
+                // Which content page/section is being edited, so the right menu item lights up
                 $contentSlug = request()->routeIs('admin.about*')
                     ? (optional(request()->route('page'))->slug ?? optional(request()->route('item'))->page)
                     : null;
+                $contentArea = \App\Models\AboutPage::PAGES[$contentSlug]['area'] ?? null;
+                $onHomePage = request()->routeIs('admin.home*', 'admin.counters*', 'admin.learning*') || $contentArea === 'home';
             @endphp
-            <a href="{{ route('admin.about.index') }}" class="sidebar-link {{ request()->routeIs('admin.about*') && !in_array($contentSlug, ['e-resources','contact']) ?'active':'' }}"><i class="fa fa-building-columns"></i> About Pages</a>
+            <a href="{{ route('admin.home.index') }}" class="sidebar-link {{ $onHomePage ?'active':'' }}"><i class="fa fa-house"></i> Home Page</a>
+            <a href="{{ route('admin.about.index') }}" class="sidebar-link {{ request()->routeIs('admin.about.index') || $contentArea === 'about' ?'active':'' }}"><i class="fa fa-building-columns"></i> About Pages</a>
             <a href="{{ route('admin.schools.index') }}" class="sidebar-link {{ request()->routeIs('admin.schools*')?'active':'' }}"><i class="fa fa-school"></i> Schools &amp; Programmes</a>
             <a href="{{ route('admin.gallery.index') }}" class="sidebar-link {{ request()->routeIs('admin.gallery*')?'active':'' }}"><i class="fa fa-images"></i> Gallery</a>
             <a href="{{ route('admin.about.edit', 'e-resources') }}" class="sidebar-link {{ $contentSlug === 'e-resources' ?'active':'' }}"><i class="fa fa-book-bookmark"></i> E-Resources</a>

@@ -98,6 +98,9 @@
 @endsection
 
 @section('content')
+<div style="margin-bottom:20px">
+    <a href="{{ route('admin.home.index') }}" class="btn btn-outline btn-sm"><i class="fa fa-arrow-left"></i> All Home Page Sections</a>
+</div>
 <!-- Section Live Preview -->
 <div class="card">
     <div class="card-header">

@@ -26,22 +26,37 @@ class AboutController extends Controller
 
     public function updatePage(Request $request, AboutPage $page)
     {
-        $data = $request->validate([
-            'header_title'     => 'required|string|max:255',
-            'header_subtitle'  => 'nullable|string|max:255',
-            'section_title'    => 'required|string|max:255',
-            'section_subtitle' => 'nullable|string|max:1000',
-            'extra_title'      => 'nullable|string|max:255',
-            'extra_text'       => 'nullable|string|max:3000',
-        ]);
-
-        if (! $page->config()['extra']) {
-            unset($data['extra_title'], $data['extra_text']);
+        // Only the fields this page/section actually shows can be changed
+        $rules = [];
+        foreach ($page->fields() as $field => $spec) {
+            if (! empty($spec['image'])) {
+                $rules['image_file'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120';
+                continue;
+            }
+            $max = in_array($field, ['section_subtitle', 'extra_text']) || ! empty($spec['textarea']) ? 3000 : 255;
+            $rules[$field] = [! empty($spec['required']) ? 'required' : 'nullable', 'string', 'max:' . $max];
         }
+        if ($extra = $page->config()['extra']) {
+            $rules['extra_title'] = 'nullable|string|max:255';
+            if ($extra['text']) {
+                $rules['extra_text'] = 'nullable|string|max:3000';
+            }
+        }
+
+        $data = $request->validate($rules);
+
+        if ($request->hasFile('image_file')) {
+            $file = $request->file('image_file');
+            $name = $page->slug . '_' . time() . '.' . strtolower($file->getClientOriginalExtension());
+            $file->move(public_path('images/about'), $name);
+            $this->deleteUploadedImage($page->image);
+            $data['image'] = 'images/about/' . $name;
+        }
+        unset($data['image_file']);
 
         $page->update($data);
 
-        return redirect()->route('admin.about.edit', $page)->with('success', 'Page text updated successfully.');
+        return redirect()->route('admin.about.edit', $page)->with('success', 'Text updated successfully.');
     }
 
     public function createItem(AboutPage $page, string $group)
@@ -115,51 +130,51 @@ class AboutController extends Controller
 
     private function validateItem(Request $request, AboutItem $item): array
     {
-        $group = $item->groupConfig();
-        $type = $group['type'];
-        $isPerson = $type === 'person';
+        $spec = $item->fieldSpec();
+        $required = fn (string $field) => ! empty($spec[$field][1]);
 
-        $data = $request->validate([
-            'title'        => 'required|string|max:255',
-            'subtitle'     => [Rule::requiredIf($isPerson), 'nullable', 'string', 'max:255'],
-            'body'         => [Rule::requiredIf(in_array($type, ['card', 'link'])), 'nullable', 'string', 'max:3000'],
-            'icon'         => [Rule::requiredIf(! $isPerson), 'nullable', 'string', 'max:50', 'regex:/^fa-[a-z0-9-]+$/'],
-            'url'          => [Rule::requiredIf($type === 'link'), 'nullable', 'url:http,https', 'max:255'],
-            'phone'        => ['nullable', 'string', 'max:50', 'regex:/^[0-9+()\-\s\/]+$/'],
-            'email'        => 'nullable|email|max:255',
-            'image_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'remove_image' => 'nullable|boolean',
-            'sort_order'   => 'nullable|integer|min:0',
-        ], [
-            'icon.regex'  => 'The icon must be a Font Awesome class such as fa-star.',
-            'url.url'     => 'The link must be a full web address starting with http:// or https://',
-            'phone.regex' => 'The phone number may only contain digits, spaces and + - ( ) /',
+        $rules = [
+            'title'      => [$required('title') ? 'required' : 'nullable', 'string', 'max:255'],
+            'subtitle'   => [Rule::requiredIf($required('subtitle')), 'nullable', 'string', 'max:255'],
+            'value'      => [Rule::requiredIf($required('value')), 'nullable', 'string', 'max:50'],
+            'body'       => [Rule::requiredIf($required('body')), 'nullable', 'string', 'max:3000'],
+            'icon'       => [Rule::requiredIf($required('icon')), 'nullable', 'string', 'max:50', 'regex:/^fa-[a-z0-9-]+$/'],
+            'url'        => [Rule::requiredIf($required('url')), 'nullable', 'url:http,https', 'max:255'],
+            'phone'      => ['nullable', 'string', 'max:50', 'regex:/^[0-9+()\-\s\/]+$/'],
+            'email'      => 'nullable|email|max:255',
+            'sort_order' => 'nullable|integer|min:0',
+        ];
+        if (isset($spec['image'])) {
+            // A picture is required for slides and photos, unless one is already saved
+            $mustUpload = $required('image') && ! $item->image;
+            $rules['image_file'] = [$mustUpload ? 'required' : 'nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'];
+            $rules['remove_image'] = 'nullable|boolean';
+        }
+
+        $data = $request->validate($rules, [
+            'icon.regex'          => 'The icon must be a Font Awesome class such as fa-star.',
+            'url.url'             => 'The link must be a full web address starting with http:// or https://',
+            'phone.regex'         => 'The phone number may only contain digits, spaces and + - ( ) /',
+            'image_file.required' => 'Please choose a picture.',
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['title'] = $data['title'] ?? '';
 
         // Clear fields that this kind of item does not use
-        if ($type !== 'link') {
-            $data['url'] = null;
-        }
-        if ($type !== 'contact') {
-            $data['phone'] = $data['email'] = null;
-        }
-        if (! in_array($type, ['person', 'link'])) {
-            $data['subtitle'] = null;
+        foreach (['subtitle', 'value', 'body', 'icon', 'url', 'phone', 'email'] as $field) {
+            if (! isset($spec[$field])) {
+                $data[$field] = null;
+            }
         }
 
-        if ($isPerson) {
-            $data['icon'] = null;
-            if (! ($group['describe'] ?? false)) {
-                $data['body'] = null;
-            }
+        if (isset($spec['image'])) {
             if ($request->hasFile('image_file')) {
                 $file = $request->file('image_file');
                 $name = $item->group . '_' . time() . '_' . mt_rand(100, 999) . '.' . strtolower($file->getClientOriginalExtension());
                 $file->move(public_path('images/about'), $name);
                 $data['image'] = 'images/about/' . $name;
-            } elseif ($request->boolean('remove_image')) {
+            } elseif ($request->boolean('remove_image') && ! $required('image')) {
                 $data['image'] = null;
             }
         } else {

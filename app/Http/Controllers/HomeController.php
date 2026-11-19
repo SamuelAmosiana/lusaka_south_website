@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AboutPage;
 use App\Models\Event;
 use App\Models\Counter;
 use App\Models\LearningSetting;
@@ -29,7 +30,13 @@ class HomeController extends Controller
             ->orderBy('id')
             ->get();
 
+        // Editable home page sections (Admin > Home Page)
+        $home = AboutPage::with('items')->whereIn('slug', AboutPage::slugsIn('home'))->get()->keyBy('slug');
+        $hero = $home->get('home-hero');
+
         return view('home', compact(
+            'home',
+            'hero',
             'featuredUpdates',
             'counters',
             'learningSettings',

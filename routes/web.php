@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\LearningController;
 use App\Http\Controllers\Admin\AboutController as AdminAboutController;
 use App\Http\Controllers\Admin\SchoolController as AdminSchoolController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
+use App\Http\Controllers\Admin\HomePageController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Models\Faq;
 use App\Models\Download;
@@ -112,6 +113,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('schools/settings', [AdminSchoolController::class, 'updateSettings'])->name('schools.settings');
     Route::post('schools/batch', [AdminSchoolController::class, 'batchUpdate'])->name('schools.batch');
     Route::resource('schools', AdminSchoolController::class)->except('show');
+
+    // Home page: one place listing every home page section
+    Route::get('home', [HomePageController::class, 'index'])->name('home.index');
 
     // Gallery sections and photos
     Route::post('gallery/batch', [AdminGalleryController::class, 'batchUpdate'])->name('gallery.batch');
