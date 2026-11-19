@@ -14,6 +14,9 @@ class AboutItem extends Model
         'body',
         'icon',
         'image',
+        'url',
+        'phone',
+        'email',
         'sort_order',
         'is_active',
     ];

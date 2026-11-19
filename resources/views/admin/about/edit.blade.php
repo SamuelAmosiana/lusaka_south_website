@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @php $config = $page->config(); @endphp
 @section('title', 'Edit ' . $config['label'])
-@section('page-title', 'About Pages: ' . $config['label'])
+@section('page-title', ($config['about'] ? 'About Pages: ' : '') . $config['label'])
 
 @section('styles')
 <style>
@@ -15,7 +15,9 @@ tr.inactive td{opacity:.55}
 
 @section('content')
 <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+    @if($config['about'])
     <a href="{{ route('admin.about.index') }}" class="btn btn-outline btn-sm"><i class="fa fa-arrow-left"></i> All About Pages</a>
+    @endif
     <a href="{{ route($config['route']) }}" target="_blank" class="btn btn-outline btn-sm"><i class="fa fa-external-link-alt"></i> View Page on Website</a>
 </div>
 
@@ -62,10 +64,12 @@ tr.inactive td{opacity:.55}
             <label for="extra_title">{{ $config['extra']['title'] }}</label>
             <input type="text" name="extra_title" id="extra_title" class="form-control" value="{{ old('extra_title', $page->extra_title) }}">
         </div>
+        @if($config['extra']['text'])
         <div class="form-group">
             <label for="extra_text">{{ $config['extra']['text'] }}</label>
             <textarea name="extra_text" id="extra_text" class="form-control" rows="3">{{ old('extra_text', $page->extra_text) }}</textarea>
         </div>
+        @endif
         @endif
         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save Page Text</button>
     </form>
@@ -110,8 +114,10 @@ tr.inactive td{opacity:.55}
                 </td>
                 <td>
                     <strong>{{ $item->title }}</strong>
-                    @if($item->subtitle)<div style="color:var(--primary-orange);font-size:.85rem;font-weight:600">{{ $item->subtitle }}</div>@endif
+                    @if($item->subtitle)<div style="color:var(--primary-orange);font-size:.85rem;font-weight:600">{{ $groupConfig['type'] === 'link' ? 'Button: ' : '' }}{{ $item->subtitle }}</div>@endif
                     @if($item->body)<div style="color:var(--gray-600);font-size:.83rem;margin-top:3px">{{ Str::limit($item->body, 140) }}</div>@endif
+                    @if($item->url)<div style="font-size:.82rem;margin-top:3px"><i class="fa fa-link me-1"></i><a href="{{ $item->url }}" target="_blank" rel="noopener">{{ $item->url }}</a></div>@endif
+                    @if($item->phone || $item->email)<div style="font-size:.82rem;margin-top:3px">@if($item->phone)<i class="fa fa-phone me-1"></i>{{ $item->phone }}&nbsp;&nbsp;@endif @if($item->email)<i class="fa fa-envelope me-1"></i>{{ $item->email }}@endif</div>@endif
                 </td>
                 <td style="text-align:center">
                     <input type="hidden" form="batch-form" name="items[{{ $item->id }}][is_active]" value="0">

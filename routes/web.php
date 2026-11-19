@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\LearningController;
 use App\Http\Controllers\Admin\AboutController as AdminAboutController;
 use App\Http\Controllers\Admin\SchoolController as AdminSchoolController;
+use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Models\Faq;
 use App\Models\Download;
@@ -57,14 +58,16 @@ Route::get('/faqs', function () {
     return view('faqs', compact('faqs'));
 })->name('faqs');
 
-Route::get('/gallery', fn() => view('gallery'))->name('gallery');
+Route::get('/gallery', fn() => view('gallery', [
+    'sections' => \App\Models\GallerySection::active()->ordered()->with('activePhotos')->get(),
+]))->name('gallery');
 
 Route::get('/downloads', function () {
     $downloads = Download::active()->get()->groupBy('category');
     return view('downloads', compact('downloads'));
 })->name('downloads');
 
-Route::get('/e-resources', fn() => view('e-resources'))->name('e-resources');
+Route::get('/e-resources', [AboutController::class, 'show'])->defaults('slug', 'e-resources')->name('e-resources');
 
 // Contact
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
@@ -110,7 +113,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('schools/batch', [AdminSchoolController::class, 'batchUpdate'])->name('schools.batch');
     Route::resource('schools', AdminSchoolController::class)->except('show');
 
-    // About Pages (Overview, Team, Partnerships, Accreditation)
+    // Gallery sections and photos
+    Route::post('gallery/batch', [AdminGalleryController::class, 'batchUpdate'])->name('gallery.batch');
+    Route::resource('gallery', AdminGalleryController::class)->except('show');
+
+    // About Pages (Overview, Team, Partnerships, Accreditation), E-Resources and Contact page content
     Route::get('about', [AdminAboutController::class, 'index'])->name('about.index');
     Route::get('about/items/{item}/edit', [AdminAboutController::class, 'editItem'])->name('about.items.edit');
     Route::put('about/items/{item}', [AdminAboutController::class, 'updateItem'])->name('about.items.update');

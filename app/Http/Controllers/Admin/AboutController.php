@@ -12,7 +12,7 @@ class AboutController extends Controller
 {
     public function index()
     {
-        $pages = AboutPage::withCount('items')->get()->keyBy('slug');
+        $pages = AboutPage::whereIn('slug', AboutPage::aboutSlugs())->withCount('items')->get()->keyBy('slug');
 
         return view('admin.about.index', compact('pages'));
     }
@@ -116,21 +116,38 @@ class AboutController extends Controller
     private function validateItem(Request $request, AboutItem $item): array
     {
         $group = $item->groupConfig();
-        $isPerson = $group['type'] === 'person';
+        $type = $group['type'];
+        $isPerson = $type === 'person';
 
         $data = $request->validate([
             'title'        => 'required|string|max:255',
             'subtitle'     => [Rule::requiredIf($isPerson), 'nullable', 'string', 'max:255'],
-            'body'         => [Rule::requiredIf(! $isPerson), 'nullable', 'string', 'max:3000'],
+            'body'         => [Rule::requiredIf(in_array($type, ['card', 'link'])), 'nullable', 'string', 'max:3000'],
             'icon'         => [Rule::requiredIf(! $isPerson), 'nullable', 'string', 'max:50', 'regex:/^fa-[a-z0-9-]+$/'],
+            'url'          => [Rule::requiredIf($type === 'link'), 'nullable', 'url:http,https', 'max:255'],
+            'phone'        => ['nullable', 'string', 'max:50', 'regex:/^[0-9+()\-\s\/]+$/'],
+            'email'        => 'nullable|email|max:255',
             'image_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'remove_image' => 'nullable|boolean',
             'sort_order'   => 'nullable|integer|min:0',
         ], [
-            'icon.regex' => 'The icon must be a Font Awesome class such as fa-star.',
+            'icon.regex'  => 'The icon must be a Font Awesome class such as fa-star.',
+            'url.url'     => 'The link must be a full web address starting with http:// or https://',
+            'phone.regex' => 'The phone number may only contain digits, spaces and + - ( ) /',
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+
+        // Clear fields that this kind of item does not use
+        if ($type !== 'link') {
+            $data['url'] = null;
+        }
+        if ($type !== 'contact') {
+            $data['phone'] = $data['email'] = null;
+        }
+        if (! in_array($type, ['person', 'link'])) {
+            $data['subtitle'] = null;
+        }
 
         if ($isPerson) {
             $data['icon'] = null;
@@ -146,7 +163,6 @@ class AboutController extends Controller
                 $data['image'] = null;
             }
         } else {
-            $data['subtitle'] = null;
             $data['image'] = null;
         }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactMessage;
+use App\Models\AboutPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -12,7 +13,9 @@ class ContactController extends Controller
 {
     public function show()
     {
-        return view('contact');
+        $page = AboutPage::with('items')->where('slug', 'contact')->firstOrFail();
+
+        return view('contact', compact('page'));
     }
 
     public function store(Request $request)

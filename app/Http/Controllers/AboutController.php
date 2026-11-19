@@ -10,6 +10,6 @@ class AboutController extends Controller
     {
         $page = AboutPage::with('items')->where('slug', $slug)->firstOrFail();
 
-        return view('about.' . $slug, compact('page'));
+        return view(view()->exists('about.' . $slug) ? 'about.' . $slug : $slug, compact('page'));
     }
 }

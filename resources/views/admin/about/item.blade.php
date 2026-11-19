@@ -1,9 +1,10 @@
 @extends('layouts.admin')
 @php
     $groupConfig = $item->groupConfig();
-    $isPerson = $groupConfig['type'] === 'person';
+    $type = $groupConfig['type'];
+    $isPerson = $type === 'person';
     $describe = ! $isPerson || ($groupConfig['describe'] ?? false);
-    $noun = $isPerson ? 'Person' : 'Card';
+    $noun = ['person' => 'Person', 'link' => 'Resource', 'contact' => 'Contact Card'][$type] ?? 'Card';
     $editing = $item->exists;
 @endphp
 @section('title', ($editing ? 'Edit ' : 'Add ') . $noun)
@@ -31,7 +32,7 @@
 
         <div class="form-row">
             <div class="form-group">
-                <label for="title">{{ $isPerson ? 'Name' : 'Title' }} *</label>
+                <label for="title">{{ ['person' => 'Name', 'link' => 'Resource Name', 'contact' => 'Department / Office'][$type] ?? 'Title' }} *</label>
                 <input type="text" name="title" id="title" class="form-control" value="{{ old('title', $item->title) }}" required>
             </div>
             <div class="form-group">
@@ -47,10 +48,38 @@
         </div>
         @endif
 
+        @if($type === 'link')
+        <div class="form-row">
+            <div class="form-group">
+                <label for="url">Website Link *</label>
+                <input type="url" name="url" id="url" class="form-control" value="{{ old('url', $item->url) }}" required placeholder="https://">
+            </div>
+            <div class="form-group">
+                <label for="subtitle">Button Text</label>
+                <input type="text" name="subtitle" id="subtitle" class="form-control" value="{{ old('subtitle', $item->subtitle) }}" placeholder="Visit Website">
+            </div>
+        </div>
+        @endif
+
+        @if($type === 'contact')
+        <div class="form-row">
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone', $item->phone) }}" placeholder="+260 ...">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $item->email) }}" placeholder="office@lsc.edu.zm">
+            </div>
+        </div>
+        @endif
+
         @if($describe)
+        @php $bodyRequired = in_array($type, ['card', 'link']); @endphp
         <div class="form-group">
-            <label for="body">{{ $isPerson ? 'Short Description' : 'Text' }}{{ $isPerson ? '' : ' *' }}</label>
-            <textarea name="body" id="body" class="form-control" rows="4" {{ $isPerson ? '' : 'required' }}>{{ old('body', $item->body) }}</textarea>
+            <label for="body">{{ $isPerson ? 'Short Description' : 'Text' }}{{ $bodyRequired ? ' *' : '' }}</label>
+            <textarea name="body" id="body" class="form-control" rows="4" {{ $bodyRequired ? 'required' : '' }}>{{ old('body', $item->body) }}</textarea>
+            @if($type === 'contact')<small style="color:var(--gray-600)">Each new line shows on its own line, e.g. an address followed by opening hours.</small>@endif
         </div>
         @endif
 
@@ -83,7 +112,7 @@
             <div style="margin-top:10px">
                 <span style="font-size:.8rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:6px">Quick picks (or any icon from fontawesome.com, e.g. fa-landmark):</span>
                 <div style="display:flex;flex-wrap:wrap;gap:8px">
-                    @foreach(['fa-book-open','fa-bullseye','fa-eye','fa-building','fa-certificate','fa-medal','fa-star','fa-globe','fa-industry','fa-handshake','fa-landmark','fa-flask','fa-money-bill-wave','fa-graduation-cap','fa-users','fa-shield-halved'] as $preset)
+                    @foreach(['fa-book-open','fa-bullseye','fa-eye','fa-building','fa-certificate','fa-medal','fa-star','fa-globe','fa-industry','fa-handshake','fa-landmark','fa-flask','fa-money-bill-wave','fa-graduation-cap','fa-users','fa-shield-halved','fa-book','fa-database','fa-play-circle','fa-laptop','fa-location-dot','fa-briefcase'] as $preset)
                     <button type="button" class="btn btn-sm btn-outline" style="padding:6px 9px" title="{{ $preset }}" onclick="selectPreset('{{ $preset }}')"><i class="fa {{ $preset }}"></i></button>
                     @endforeach
                 </div>
