@@ -80,6 +80,7 @@
             <a href="{{ route('admin.counters.index') }}" class="sidebar-link {{ request()->routeIs('admin.counters*')?'active':'' }}"><i class="fa fa-chart-simple"></i> Home Counters</a>
             <a href="{{ route('admin.learning.index') }}" class="sidebar-link {{ request()->routeIs('admin.learning*')?'active':'' }}"><i class="fa fa-graduation-cap"></i> Online &amp; Campus</a>
             <a href="{{ route('admin.about.index') }}" class="sidebar-link {{ request()->routeIs('admin.about*')?'active':'' }}"><i class="fa fa-building-columns"></i> About Pages</a>
+            <a href="{{ route('admin.schools.index') }}" class="sidebar-link {{ request()->routeIs('admin.schools*')?'active':'' }}"><i class="fa fa-school"></i> Schools &amp; Programmes</a>
             <div class="sidebar-section">Finance</div>
             <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments*')?'active':'' }}"><i class="fa fa-money-bill-wave"></i> Payments
                 @php $pendingPayments = \App\Models\Payment::where('status','pending')->count(); @endphp

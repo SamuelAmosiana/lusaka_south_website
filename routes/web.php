@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\LearningController;
 use App\Http\Controllers\Admin\AboutController as AdminAboutController;
+use App\Http\Controllers\Admin\SchoolController as AdminSchoolController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Models\Faq;
 use App\Models\Download;
@@ -32,7 +33,10 @@ Route::get('/about/partnerships', [AboutController::class, 'show'])->defaults('s
 Route::get('/about/accreditation', [AboutController::class, 'show'])->defaults('slug', 'accreditation')->name('about.accreditation');
 
 // Schools / Programs
-Route::get('/schools', fn() => view('schools'))->name('schools');
+Route::get('/schools', fn() => view('schools', [
+    'settings' => \App\Models\SchoolSetting::current(),
+    'schools'  => \App\Models\School::active()->ordered()->with('activeProgrammes')->get(),
+]))->name('schools');
 
 // Scholarships
 Route::get('/scholarships', fn() => view('scholarships'))->name('scholarships');
@@ -100,6 +104,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('learning/features/{feature}', [LearningController::class, 'updateFeature'])->name('learning.features.update');
     Route::delete('learning/features/{feature}', [LearningController::class, 'destroyFeature'])->name('learning.features.destroy');
     Route::post('learning/features/batch', [LearningController::class, 'batchUpdateFeatures'])->name('learning.features.batch');
+
+    // Schools & Programmes page
+    Route::post('schools/settings', [AdminSchoolController::class, 'updateSettings'])->name('schools.settings');
+    Route::post('schools/batch', [AdminSchoolController::class, 'batchUpdate'])->name('schools.batch');
+    Route::resource('schools', AdminSchoolController::class)->except('show');
 
     // About Pages (Overview, Team, Partnerships, Accreditation)
     Route::get('about', [AdminAboutController::class, 'index'])->name('about.index');

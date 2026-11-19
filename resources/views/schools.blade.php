@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Schools & Programmes - ' . config('site.name'))
+@section('title', $settings->header_title . ' - ' . config('site.name'))
 @section('styles')
 <style>
 .school-card{background:#fff;border-radius:15px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.1);transition:all .3s ease;border:2px solid transparent}
@@ -28,108 +28,53 @@
 @endsection
 @section('content')
 <div class="page-header"><div class="container">
-    <h1>Schools &amp; Programmes</h1>
-    <p>Explore our diverse range of industry-aligned academic programmes</p>
+    <h1>{{ $settings->header_title }}</h1>
+    @if($settings->header_subtitle)<p>{{ $settings->header_subtitle }}</p>@endif
 </div></div>
 <div class="breadcrumb"><div class="container">
-    <a href="{{ route('home') }}">Home</a> &rsaquo; Schools &amp; Programmes
+    <a href="{{ route('home') }}">Home</a> &rsaquo; {{ $settings->header_title }}
 </div></div>
 <section class="content-section"><div class="container">
-    <div class="section-title"><h2>Our Schools</h2>
-        <p>Three schools and a range of trade and skills programmes, designed with industry input to ensure graduates are job-ready.</p>
+    <div class="section-title"><h2>{{ $settings->section_title }}</h2>
+        @if($settings->section_subtitle)<p>{{ $settings->section_subtitle }}</p>@endif
     </div>
-    @php
-        $schools = [
-            [
-                'name' => 'School of Business & Management Studies',
-                'icon' => 'fa-briefcase',
-                'color' => 'linear-gradient(135deg,var(--primary-green),var(--dark-green))',
-                'intro' => "Develop your business acumen with programmes designed to meet the demands of Zambia's growing economy.",
-                'apply' => config('site.apply.undergraduate'),
-                'programmes' => [
-                    ['Bachelor of Business Administration (BBA)', 'Degree'],
-                    ['BSc Procurement and Supply Chain Management (BScPSCM)', 'Degree'],
-                    ['Bachelor of Accounting and Finance (BAF)', 'Degree'],
-                    ['Diploma in Business Administration', 'Diploma'],
-                    ['Diploma in Technical & Vocational Teaching (Teaching Methodology)', 'Diploma'],
-                ],
-            ],
-            [
-                'name' => 'School of Law',
-                'icon' => 'fa-scale-balanced',
-                'color' => 'linear-gradient(135deg,var(--primary-green),var(--dark-green))',
-                'intro' => 'Build a strong foundation in legal principles and practice for a career in law and public service.',
-                'apply' => config('site.apply.undergraduate'),
-                'programmes' => [
-                    ['Bachelor of Laws (LLB)', 'Degree'],
-                ],
-            ],
-            [
-                'name' => 'School of Engineering and Information Technology',
-                'icon' => 'fa-gears',
-                'color' => 'linear-gradient(135deg,var(--primary-green),var(--dark-green))',
-                'intro' => "Gain the technical and digital skills demanded by Zambia's infrastructure, energy and technology sectors.",
-                'apply' => config('site.apply.undergraduate'),
-                'programmes' => [
-                    ['Bachelor of Science in Information Communication Technology', 'Degree'],
-                    ['Diploma in Electrical Engineering and Renewable Energy', 'Diploma'],
-                    ['Diploma in Mechanical and Industrial Engineering', 'Diploma'],
-                    ['Diploma in Control & Instrumentation Engineering', 'Diploma'],
-                ],
-            ],
-            [
-                'name' => 'Trade and Skills Programmes',
-                'icon' => 'fa-screwdriver-wrench',
-                'color' => 'linear-gradient(135deg,var(--primary-green),var(--dark-green))',
-                'intro' => 'Hands-on certificate programmes that equip you with practical, employable skills for the trades and health care.',
-                'apply' => config('site.apply.short_courses'),
-                'wide' => true,
-                'programmes' => [
-                    ['Certificate in Automotive Engineering – Level 1', 'Certificate'],
-                    ['Certificate in Automotive Engineering – Level 2', 'Certificate'],
-                    ['Certificate in Automotive Engineering – Level 3', 'Certificate'],
-                    ['Certificate in Electrical Engineering/Electrical Technology – Level 1', 'Certificate'],
-                    ['Certificate in Electrical Engineering/Electrical Technology – Level 2', 'Certificate'],
-                    ['Certificate in Electrical Engineering/Electrical Technology – Level 3', 'Certificate'],
-                    ['Certificate in Solar Technology (Skills Award)', 'Certificate'],
-                    ['Certificate in Occupational Safety, Health & Environment', 'Certificate'],
-                    ['Certificate in Civil Engineering and Construction Management', 'Certificate'],
-                    ['Certificate in Information Communication Technologies (ICT)', 'Certificate'],
-                    ['Certificate in Nursing & Health Care Assistant', 'Certificate'],
-                    ['Certificate in Psychosocial Counselling', 'Certificate'],
-                ],
-            ],
-        ];
-    @endphp
     <div class="schools-grid">
         @foreach($schools as $school)
-        <div class="school-card {{ !empty($school['wide']) ? 'school-card-wide' : '' }}">
+        @php $count = $school->activeProgrammes->count(); @endphp
+        <div class="school-card {{ $count >= \App\Models\School::WIDE_FROM ? 'school-card-wide' : '' }}">
             <div class="school-header">
-                <div class="school-icon" style="background:{{ $school['color'] }}"><i class="fa {{ $school['icon'] }}"></i></div>
+                <div class="school-icon" style="background:linear-gradient(135deg,var(--primary-green),var(--dark-green))"><i class="fa {{ $school->icon }}"></i></div>
                 <div>
-                    <h3>{{ $school['name'] }}</h3>
-                    <small class="school-count">{{ count($school['programmes']) }} {{ Str::plural('programme', count($school['programmes'])) }}</small>
+                    <h3>{{ $school->name }}</h3>
+                    <small class="school-count">{{ $count }} {{ Str::plural('programme', $count) }}</small>
                 </div>
             </div>
             <div class="school-body">
-                <p>{{ $school['intro'] }}</p>
+                @if($school->intro)<p>{{ $school->intro }}</p>@endif
                 <ul class="program-list">
-                    @foreach($school['programmes'] as [$programme, $level])
-                    <li><i class="fa fa-chevron-right fa-xs" style="color:var(--primary-orange)"></i><span class="program-name">{{ $programme }}</span><span class="level-tag level-{{ strtolower($level) }}">{{ $level }}</span></li>
+                    @foreach($school->activeProgrammes as $programme)
+                    <li><i class="fa fa-chevron-right fa-xs" style="color:var(--primary-orange)"></i><span class="program-name">{{ $programme->name }}</span><span class="level-tag level-{{ strtolower($programme->level) }}">{{ $programme->level }}</span></li>
                     @endforeach
                 </ul>
             </div>
             <div class="school-footer">
-                <a href="{{ $school['apply'] }}" class="cta-button" style="font-size:.9rem;padding:10px 20px"><i class="fa fa-graduation-cap" style="margin-right:8px"></i>Apply</a>
-                <button onclick="openPDFViewer('{{ asset('docs/2026 PROGRAMMES.pdf') }}','Programmes Catalog')" class="cta-button-outline" style="font-size:.9rem;padding:10px 20px;cursor:pointer"><i class="fa fa-file-pdf" style="margin-right:8px"></i>Programmes PDF</button>
+                <a href="{{ $school->apply_url }}" class="cta-button" style="font-size:.9rem;padding:10px 20px"><i class="fa fa-graduation-cap" style="margin-right:8px"></i>Apply</a>
+                @if($settings->catalog_url)
+                <button type="button" onclick="openPDFViewer(@js($settings->catalog_url), 'Programmes Catalog')" class="cta-button-outline" style="font-size:.9rem;padding:10px 20px;cursor:pointer"><i class="fa fa-file-pdf" style="margin-right:8px"></i>Programmes PDF</button>
+                @endif
             </div>
         </div>
         @endforeach
     </div>
+    @if($schools->isEmpty())
+    <p style="text-align:center;color:var(--gray-600);padding:50px">Programme information is being updated. Please check back soon.</p>
+    @endif
+    @if($settings->catalog_url)
     <div style="text-align:center;margin-top:50px">
-        <button onclick="openPDFViewer('{{ asset('docs/2026 PROGRAMMES.pdf') }}','2026 Programmes Catalog')" class="cta-button">
+        <button type="button" onclick="openPDFViewer(@js($settings->catalog_url), 'Programmes Catalog')" class="cta-button">
             <i class="fa fa-file-pdf" style="margin-right:8px"></i>View Full Programmes Catalog (PDF)
         </button>
     </div>
+    @endif
 </div></section>
 @endsection
